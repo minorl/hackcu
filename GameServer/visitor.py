@@ -2,7 +2,7 @@ from GameState import GameState
 from PlayerState import PlayerState
 from GameBoard import GameBoard, Corner, Tile
 
-def visitor(object):
+class visitor(object):
     def __init__(self):
         pass
     def visit(self, obj):
@@ -29,8 +29,9 @@ def visitor(object):
     def visit_corner(self, obj):
         pass
 
-def initialStateVisitor(visitor):
+class InitialStateVisitor(visitor):
     def __init__(self):
+        super(InitialStateVisitor, self).__init__()
         self.initial_tiles = 19*[None]
         #L-R T-B for drawing purposes
         self.loc_lookup = {
@@ -38,7 +39,6 @@ def initialStateVisitor(visitor):
                 'C':7, 'N':8, 'S':9, 'Q':10, 'I':11, 'D':12, 'O':13,
                 'P':15, 'H':15, 'E':16, 'F':17, 'G':18
                 }
-
     def visit_gamestate(self, obj):
         pass
     def visit_playerstate(self, obj):
@@ -46,7 +46,7 @@ def initialStateVisitor(visitor):
     def visit_board(self, obj):
         pass
     def visit_tile(self, obj):
-        dict_rep = {'id' :obj.tileID, 'resource':obj.resource, 'dieNum' : obj.number}
+        dict_rep = {'id' :obj.tileID, 'resource':obj.resource, 'dienum' : obj.number}
         self.initial_tiles[self.loc_lookup[obj.tileID]] = dict_rep
     def visit_corner(self, obj):
         pass
