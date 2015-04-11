@@ -70,7 +70,7 @@ class InitialStateVisitor(visitor):
         self.loc_lookup = {
                 'A' :0, 'L':1, 'K':2, 'B':3, 'M' : 4, 'R': 5, 'J' : 6,
                 'C':7, 'N':8, 'S':9, 'Q':10, 'I':11, 'D':12, 'O':13,
-                'P':15, 'H':15, 'E':16, 'F':17, 'G':18
+                'P':14, 'H':15, 'E':16, 'F':17, 'G':18
                 }
     def get_json(self):
         return json.dumps(self.initial_tiles)
