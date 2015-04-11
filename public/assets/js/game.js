@@ -53,29 +53,15 @@ function create() {
     sprite = game.add.sprite(0, 0, bmd);
 
     // game.add.tween(sprite).to( {  y: 100}, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-    for (var i = 0; i < 3; i++) {
-        drawTile(total_x_offset + 2 * x_offset + (i + 1) * x_dist, total_y_offset);
-    }
-
-    for (var i = 0; i < 4; i++) {
-        drawTile(total_x_offset + x_offset + (i + 1) * x_dist, y_dist + total_y_offset);
-    }
-
-    for (var i = 0; i < 5; i++) {
-        drawTile(total_x_offset + (i + 1) * x_dist, 2 * y_dist + total_y_offset);
-    }
-
-    for (var i = 0; i < 4; i++) {
-        drawTile(total_x_offset + x_offset + (i + 1) * x_dist, 3 * y_dist + total_y_offset);
-    }
-
-    for (var i = 0; i < 3; i++) {
-        drawTile(total_x_offset + 2 * x_offset + (i + 1) * x_dist, 4 * y_dist + total_y_offset);
-    }
     // rock1.inputEnabled = true;
 
     // rock1.events.onInputDown.add(onDown, this);
     var circle_y_offset = 207;
+
+    $.getJSON("/data/initial_state.json", function(json) {
+        console.log(json);
+        drawBoard(json); // this will show the info it in firebug console
+    });
 
 
 
@@ -141,9 +127,10 @@ clicked = function(pointer) {
     }
 }
 
-function drawTile(x, y) {
-    var spriteNumber = Math.floor((Math.random() * 7));
-    var sprite = new Phaser.Sprite(game, x, y, sprites[spriteNumber]);
+function drawTile(x, y, tile_node) {
+    console.log(tile_node)
+    // var spriteNumber = Math.floor((Math.random() * 7));
+    var sprite = new Phaser.Sprite(game, x, y, tile_node.resource.toLowerCase());
     // var tile = game.add.sprite(x, y, sprites[spriteNumber]);
     tileLayer.add(sprite);
     tiles.push(sprite)
@@ -158,6 +145,28 @@ function drawCorner(x, y, r) {
     bmd.ctx.arc(x, y, r, 0, Math.PI*2, false);
     bmd.ctx.closePath();
     bmd.ctx.fill();
+}
+
+function drawBoard(tiles) {
+    for (var i = 0; i < 3; i++) {
+        drawTile(total_x_offset + 2 * x_offset + (i + 1) * x_dist, total_y_offset, tiles[i]);
+    }
+
+    for (var i = 0; i < 4; i++) {
+        drawTile(total_x_offset + x_offset + (i + 1) * x_dist, y_dist + total_y_offset, tiles[i + 3]);
+    }
+
+    for (var i = 0; i < 5; i++) {
+        drawTile(total_x_offset + (i + 1) * x_dist, 2 * y_dist + total_y_offset, tiles[i + 7]);
+    }
+
+    for (var i = 0; i < 4; i++) {
+        drawTile(total_x_offset + x_offset + (i + 1) * x_dist, 3 * y_dist + total_y_offset, tiles[i + 12]);
+    }
+
+    for (var i = 0; i < 3; i++) {
+        drawTile(total_x_offset + 2 * x_offset + (i + 1) * x_dist, 4 * y_dist + total_y_offset, tiles[i + 16]);
+    }
 }
 
 function update() {
