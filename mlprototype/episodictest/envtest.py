@@ -8,30 +8,26 @@ class TestEnv(Environment):
     discreteStates = True
     discreteActions = True
     inDim = 1
-    outDim = 1
+    outDim = 200
     numActions = 2
     def __init__(self):
         super(TestEnv, self).__init__()
-        self.good_actions = 0
-        self.counter = 0
+        self.total = 0
         self.date = 0
-        self.curr = random.sample([-1,1], 1)[0]
+        self.build_curr()
+
+    def build_curr(self):
+        self.curr = []
+        for i in range(200):
+            self.curr.append(1 if random.random() > 0.5 else -1)
 
     def getSensors(self):
-        obs = zeros(1)
-        obs[0] = self.curr
-        return obs
+        return self.curr
 
     def performAction(self, action):
-        increment = sign((action[0] - 0.5)*2) * sign(self.curr)
-        if increment > 0:
-            self.good_actions += 1
-#            if self.good_actions % 50 == 0:
-#                print "Good: %d" % self.good_actions
-        self.counter += increment
-        if self.counter < -100:
-            self.counter = -100
-        self.curr = random.sample([-1,1], 1)[0]
+        for i in self.curr:
+            self.total +=  i * (action[0] - 1)
+        self.build_curr()
         self.date += 1
 
     def reset(self):
