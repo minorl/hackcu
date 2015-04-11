@@ -1,12 +1,15 @@
 from scipy import zeros, array
-from pybrain.rl.environments.task import Task
+from pybrain.rl.environments.episodic import EpisodicTask
 
-class TestTask(Task):
+class SettleTask(EpisodicTask):
     def __init__(self, environment):
+        self.counter = 0
         self.last = 0
-        super(TestTask, self).__init__(environment)
+        super(SettleTask, self).__init__(environment)
+
+    def isFinished(self):
+        self.counter += 1
+        return self.counter % 1000 == 0
 
     def getReward(self):
-        res = self.env.counter - self.last
-        self.last = self.env.counter
-        return res
+        return 0
