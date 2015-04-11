@@ -8,6 +8,6 @@ port = 31337
 s.connect((host,port))
 
 
-s.write(json.dumps({'message':'hello world!', 'test':123.4}))
-data = s.read()
+s.send(json.dumps({'message':'hello world!', 'test':123.4}))
+data = s.recv(1024)
 print "Received: " + json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
