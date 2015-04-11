@@ -1,4 +1,6 @@
 from random import shuffle
+from copy import copy
+
 class GameBoard(object):
     def __init__(self):
         self.corners = []
@@ -93,7 +95,7 @@ class GameBoard(object):
         v.visit(self)
         for c in self.corners:
             c.accept(v)
-        for t in self.tiles.iterkeys():
+        for t in self.tiles.itervalues():
             t.accept(v)
     def getRobberPos(self):
         return self.robberPos
@@ -103,14 +105,20 @@ class GameBoard(object):
             visitedCorners = []
             startCorner = c
             roadLength = 0
+            self.recurseRoad
 
             
                 #print road
     def recurseRoad(self,c,dist, visitedCorners):
+        visitedCorners = visitedCorners.copy()
         visitedCorners.append(c)
+        print dist
         for road in c.edges:
             if road.hasRoad:
-                recurseRoad(c,dist,visitedCorners)
+                corner1 = road.corners[0]
+                corner2 = road.corners[1]
+                nextCorner = corner2 if c is corner1 else corner1
+                recurseRoad(nextCorner,dist+1,visitedCorners)
 
         
 
