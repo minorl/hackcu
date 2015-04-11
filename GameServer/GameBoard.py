@@ -91,6 +91,12 @@ class GameBoard(object):
     def getEdge(self, corner1ID,corner2ID):
         key = tuple(sorted((corner1ID,corner2ID)))
         return self.edges[key]
+    def hasColorRoad(self, cornerID, playerID):
+        for road in self.corners[cornerID].edges:
+            if road.playerID== playerID:
+                return True
+        return False
+
 
     def getCount(self,playerID,buildingTag):
         return self.buildingCounts[buildingTag][playerID]
