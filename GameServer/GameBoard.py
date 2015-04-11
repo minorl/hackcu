@@ -8,16 +8,39 @@ class GameBoard(object):
 		27:(16,28,None),28:(29,38,27),29:(18,30,28),30:(31,40,29),31:(20,32,30),32:(33,42,31),33:(22,34,32),34:(35,44,33),35:(24,36,34),36:(37,46,35),37:(26,None,36),
 		38:(28,39,None),39:(40,47,38),40:(30,41,39),41:(42,49,40),42:(32,43,41),43:(44,51,42),44:(34,45,43),45:(46,53,44),46:(36,None,45),
 		47:(39,48,None),48:(49,None,47),49:(41,50,48),50:(51,None,49),51:(43,52,50),52:(53,None,51),53:(45,None,52)}
-
-
+		self.createCorners()
+		self.createEdges()
+	def createCorners(self):
+		for i in range(54):
+			newCorner = Corner(i)
+			self.corners.append(newCorner)
+		print [str(corner) for corner in self.corners]
+	def createEdges(self):
+		for i in range(54):
+			startCorner = self.corners[i]
+			for item in range(3):
+				j= self.cornerTbl[i][item]
+				if j == None:
+					continue
+				endCorner = self.corners[j]
+				key = tuple(sorted((i,j)))
+				if not self.edges.has_key(key):
+					newEdge = CornerEdge(startCorner,endCorner)
+					self.edges[key] = newEdge
+					startCorner.addEdge(newEdge)
+					endCorner.addEdge(newEdge)
+		pass
 	pass
 
 
 class Corner(object):
 	def __init__(self,nodeID):
 		self.nodeID = nodeID
-	def setEdges(self):
-		pass
+		self.edges = []
+	def __str__(self):
+		return "ID: %d"% self.nodeID
+	def addEdge(self, edge):
+		self.edges.append(edge)
 	def setTiles(self):
 		pass
 
@@ -32,18 +55,15 @@ class Tile(object):
 		self.number = number
 
 class CornerEdge(object):
-	def __init__(self,id1, id2):
+	def __init__(self,corner1, corner2):
 		self.hasRoad = False
-		self.corners = (id1, id2)
+		self.corners = (corner1, corner2)
 		self.playerID = None
 	def addRoad(self, playerID):
 		self.hasRoad = True
 		self.playerID = playerID
 
 board = GameBoard()
-print board.cornerTbl
-
-edge = CornerEdge(0,3)
-print edge.hasRoad, edge.playerID
-edge.addRoad(2)
-print edge.hasRoad, edge.playerID
+#print board.cornerTbl
+someCorner = Corner(1)
+print someCorner
