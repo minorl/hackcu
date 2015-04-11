@@ -12,7 +12,7 @@ from envtest import TestEnv
 env = TestEnv()
 task = TestTask(env)
 
-controller = ActionValueNetwork(200, 3)
+controller = ActionValueNetwork(1000, 3)
 learner = NFQ()
 agent = LearningAgent(controller, learner)
 experiment = EpisodicExperiment(task, agent)
@@ -20,6 +20,7 @@ experiment = EpisodicExperiment(task, agent)
 i = 0
 while True:
     experiment.doEpisodes(1)
+    print "Learning"
     agent.learn()
     agent.reset()
     i += 1
