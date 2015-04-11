@@ -16,12 +16,12 @@ class TestEnv(Environment):
         self.counter = 0
         self.curr = random.sample([-1,1], 1)[0]
 
-    def getSensors(self):
+    def getSensors(self):    
         obs = zeros(1)
         obs[0] = self.curr
         return obs
 
-    def performAction(self, action):
+    def performAction(self, action):    
         increment = sign((action[0] - 0.5)*2) * sign(self.curr)
         if increment > 0:
             self.good_actions += 1
