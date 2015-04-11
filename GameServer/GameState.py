@@ -8,6 +8,7 @@ class GameState(object):
         self.longestroad = None
         self.largestarmy = None
         self.turn = 0
+        #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard
         self.phase = None
         self.progress = 'going'
         self.lastroll = None
