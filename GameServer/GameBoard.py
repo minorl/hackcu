@@ -4,7 +4,8 @@ class GameBoard(object):
 		self.corners = []
 		self.edges = {} #(id1,id2)->CornerEdge
 		self.tiles = {}
-		self.possibleTiles = ['Desert','Ore','Ore','Ore','Wood','Wood','Wood','Wood','Brick','Brick','Brick','Wool','Wool','Wool','Wool','Wheat','Wheat','Wheat','Wheat']
+		self.buildingCounts = {'road':[0,0,0,0],'settlement':[0,0,0,0],'city':[0,0,0,0]} #building->[p1,p2,p3]
+		self.possibleTiles = ['desert','Ore','Ore','Ore','Wood','Wood','Wood','Wood','Brick','Brick','Brick','Wool','Wool','Wool','Wool','Wheat','Wheat','Wheat','Wheat']
 		self.harvestNumber = [5,2,6,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11]
 		shuffle(self.possibleTiles)
 		self.cornerTbl = {0:(1,8,None),1:(None,2,0),2:(3,10,1),3:(None,4,2),4:(5,12,3),5:(None,6,4),6:(None,14,5),
@@ -35,7 +36,7 @@ class GameBoard(object):
 		self.createCorners()
 		self.createEdges()
 		self.createTiles()
-		print [str(corner) for corner in self.corners]	
+		#print [str(corner) for corner in self.corners]	
 	def createCorners(self):
 		for i in range(54):
 			newCorner = Corner(i)
@@ -60,7 +61,7 @@ class GameBoard(object):
 		harvestNum =0
 		for i in range(19):
 			curChar = unichr(65+i)
-			if self.possibleTiles[i]== 'Desert':
+			if self.possibleTiles[i]== 'desert':
 				newTile = Tile(curChar, self.possibleTiles[i],None)
 			else:
 				newTile = Tile(curChar, self.possibleTiles[i],self.harvestNumber[harvestNum])
@@ -68,10 +69,22 @@ class GameBoard(object):
 			self.tiles[curChar]= newTile
 			for j in range(6):
 				self.corners[self.tileTbl[curChar][j]].addTile(newTile)
-			
-			#print newTi
+	def addRoad(self,corner1ID,corner2ID, playerID):
+		self.buildingCounts["road"][playerID]+=1
+		key = tuple(sorted((corner1ID,corner2ID)))
+		self.edges[key].addRoad(playerID)
+	def addBuilding(self,cornerID,playerID,buildingTag):
+		if buildingTag == "settlement":
+			self.buildingCounts[buildingTag][playerID]+=1
+		if buildingTag == "city":
+			self.buildingCounts["settlement"][playerID]-=1
+			self.buildingCounts[buildingTag][playerID]+=1
+		self.corners[cornerID].addBuilding(playerID,buildingTag)
+	def getCount(self,playerID,buildingTag):
+		return self.buildingCounts[buildingTag][playerID]
+	def getCounts(self,buildingTag):
+		return self.buildingCounts[buildingTag]
 
-	pass
 
 
 class Corner(object):
@@ -79,6 +92,8 @@ class Corner(object):
 		self.nodeID = nodeID
 		self.edges = []
 		self.tiles = []
+		self.buildingTag = None
+		self.buildingPlayerID = None
 	def __str__(self):
 		return "ID: %d,%s"% (self.nodeID,[str(tile) for tile in self.tiles])
 	def addEdge(self, edge):
@@ -88,9 +103,9 @@ class Corner(object):
 		if len(self.tiles)>3:
 			del self.tiles[0]
 
-	def addBuilding(playerID, buildingType):
-		pass
-	pass
+	def addBuilding(self,playerID, buildingTag):
+		self.buildingTag=playerID
+		self.buildingPlayerID=buildingTag
 
 class Tile(object):
 	def __init__(self,tileID, resource,number):
@@ -110,6 +125,5 @@ class CornerEdge(object):
 		self.playerID = playerID
 
 board = GameBoard()
-#print board.cornerTbl
-someCorner = Corner(1)
-print someCorner
+board.addRoad(0,1,3)
+board.addBuilding(0,3,"settlement")
