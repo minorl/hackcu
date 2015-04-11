@@ -8,6 +8,24 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css">
     <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/eureca.js"></script>
+    <script src="/assets/js/game.js"></script>
+    <style>
+        canvas {
+           display : block;
+           margin : auto;
+        }
+        #game-container {
+            margin-top: 100px;
+        }
+        .footer {
+            position: relative;
+            margin-top: -150px; /* negative value of footer height */
+            height: 150px;
+            clear:both;
+            padding-top:20px;
+            padding-left: 20px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -22,5 +40,7 @@
             serverProxy.hello();
         });
     </script>
+    <div id="game-container"></div>
+    <footer class="footer">Art created by <a href="http://www.deviantart.com/art/Alternate-Catan-Hexes-318684622">Avangion</a></footer>
 </body>
 </html>

@@ -1,6 +1,40 @@
 var express = require('express');
 var app = express();
 
+//Set up net server for communication between web server and game server
+var net = require('net');
+
+var gameServer = net.createServer(function(conn) {
+    console.log("Server: Client connected");
+
+    // If connection is closed
+    conn.on("end", function() {
+        console.log('Server: Client disconnected');
+        // Close the server
+        server.close();
+        // End the process
+        process.exit(0);
+    });
+
+    // Handle data from client
+    conn.on("data", function(data) {
+        data = JSON.parse(data);
+        console.log("Response from client: %s", data);
+    });
+
+    // Let's response with a hello message
+    conn.write(
+        JSON.stringify(
+            { response: "Hey there client!" }
+        )
+    );
+});
+
+// Listen for connections
+gameServer.listen(31337, "localhost", function () {
+    console.log("Server: Listening");
+});
+
 var _ = require('lodash');
 
 var Eureca = require('eureca.io');
