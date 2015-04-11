@@ -7,7 +7,7 @@ class GameBoard(object):
         self.edges = {} #(id1,id2)->CornerEdge
         self.tiles = {}
         self.buildingCounts = {'road':[0,0,0,0],'settlement':[0,0,0,0],'city':[0,0,0,0]} #building->[p1,p2,p3]
-        self.possibleTiles = ['desert','ore','ore','ore','wood','wood','wood','wood','brick','brick','brick','wool','wool','wool','wool','wheat','wheat','wheat','wheat']
+        self.possibleTiles = ['desert','ore','ore','ore','wood','wood','wood','wood','brick','brick','brick','sheep','sheep','sheep','sheep','wheat','wheat','wheat','wheat']
         self.harvestNumber = [5,2,6,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11]
         shuffle(self.possibleTiles)
         self.cornerTbl = {0:(1,8,None),1:(None,2,0),2:(3,10,1),3:(None,4,2),4:(5,12,3),5:(None,6,4),6:(None,14,5),
