@@ -61,7 +61,7 @@ class GameBoard(object):
                     startCorner.addEdge(newEdge)
                     endCorner.addEdge(newEdge)
     def createTiles(self):
-        print self.possibleTiles
+        #print self.possibleTiles
         harvestNum =0
         for i in range(19):
             curChar = unichr(65+i)
@@ -100,16 +100,18 @@ class GameBoard(object):
 
     def getLongestRoad(self):
         for c in self.corners:
-            visitedCorners = [c]
+            visitedCorners = []
             startCorner = c
             roadLength = 0
 
-            for road in c.edges:
-                
-                if road.hasRoad:
-
-                    print road
+            
                 #print road
+    def recurseRoad(self,c,dist, visitedCorners):
+        visitedCorners.append(c)
+        for road in c.edges:
+            if road.hasRoad:
+                recurseRoad(c,dist,visitedCorners)
+
         
 
 
