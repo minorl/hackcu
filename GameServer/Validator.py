@@ -5,10 +5,21 @@ class Validator(object):
         self.gameState = gameState
     def validateMove(self,move):
         if move.typ=="build":
-            #if not self.checkResources(move.playerid,move.structure):
-            #    return False
+            if not self.checkResources(move.playerid,move.structure):
+                return False
             if not self.checkLocation(move.playerid,move.structure,move.location):
                 return False
+        elif move.typ == "robber":
+            return move.location != self.gameState.board.robberPos
+        elif move.typ == "takecard":
+            if move.target ==move.playerid:
+                return False
+            robberLocation = self.gameState.board.robberPos
+            for cornerID in self.gameState.board.tileTbl[robberLocation]:
+                if self.gameState.board.corners[cornerID].buildingPlayerID == move.target:
+                    return True
+            return False
+
 
 
     def checkResources(self, playerID,buildingTag):
