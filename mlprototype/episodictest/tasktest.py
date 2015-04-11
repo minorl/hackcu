@@ -8,11 +8,10 @@ class TestTask(EpisodicTask):
         super(TestTask, self).__init__(environment)
 
     def getReward(self):
-        if (abs(self.env.counter) >= 20):
-            print "Done: %d, %d" % (self.env.date, self.env.counter)
-            return sign(self.env.counter) * 100  - self.env.date
+        if (100 < self.env.total < 200):
+            return 100
         return 0
 
     def isFinished(self):
-        done = abs(self.env.counter) >= 20
+        done = self.env.date > 100
         return done
