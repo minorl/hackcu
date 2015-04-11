@@ -15,6 +15,7 @@ class SettleEnv(Environment):
         self.stateTransfer = stateTransfer
         self.actionTransfer = actionTransfer
         self.state = None
+        self.sensors = zeros(15)
         #Have to bootstrap into the wait/notify cycle
         self.cv.acquire()
         #Signal that bootstrapping was successful
@@ -26,8 +27,21 @@ class SettleEnv(Environment):
         print "Getting sensors"
         sensors = zeros(15)
         #Feature engineering
-        
+        whoami = self.state.turn
+        board = self.state.board
+        myState = self.state.players[whoami]
+        i = 0
+        #Points
+        self.sensors[i] = myState.score
+        i += 1
+        #My Cards
+        for resource in ["brick", "wood", "sheep", "wheat", "ore"]:
+            self.sensors[i] = myState.resources[resource]
+            i += 1
+
+
         return sensors
+
     def performAction(self, action):
         #choose move
         print "Applying action"
