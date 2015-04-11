@@ -33,9 +33,13 @@ class GameBoard(object):
                         'Q':(23,24,35,34,33,22),
                         'R':(12,13,23,22,21,11),
                         'S':(21,22,33,32,31,20)}
+        self.robberPos = None
+
+
         self.createCorners()
         self.createEdges()
         self.createTiles()
+        #print self.robberPos
         #print [str(corner) for corner in self.corners] 
     def createCorners(self):
         for i in range(54):
@@ -63,6 +67,7 @@ class GameBoard(object):
             curChar = unichr(65+i)
             if self.possibleTiles[i]== 'desert':
                 newTile = Tile(curChar, self.possibleTiles[i],None)
+                self.robberPos = curChar
             else:
                 newTile = Tile(curChar, self.possibleTiles[i],self.harvestNumber[harvestNum])
                 harvestNum+=1
@@ -88,8 +93,23 @@ class GameBoard(object):
         v.visit(self)
         for c in self.corners:
             c.accept(v)
-        for t in self.tiles:
+        for t in self.tiles.iterkeys():
             t.accept(v)
+    def getRobberPos(self):
+        return self.robberPos
+
+    def getLongestRoad(self):
+        for c in self.corners:
+            visitedCorners = [c]
+            startCorner = c
+            roadLength = 0
+
+            for road in c.edges:
+                
+                if road.hasRoad:
+
+                    print road
+                #print road
         
 
 
@@ -134,7 +154,16 @@ class CornerEdge(object):
     def addRoad(self, playerID):
         self.hasRoad = True
         self.playerID = playerID
+    def __str__(self):
+        return "Road (%d,%d),%s"%(self.corners[0].nodeID,self.corners[1].nodeID,self.hasRoad)
 
-board = GameBoard()
-board.addRoad(0,1,3)
-board.addBuilding(0,3,"settlement")
+class LongestRoad:
+    def __init__(self):
+        self.board = GameBoard()
+    def getLongestRoad():
+        pass
+
+#board = GameBoard()
+#board.addRoad(0,1,3)
+#board.addBuilding(0,3,"settlement")
+#board.getLongestRoad()
