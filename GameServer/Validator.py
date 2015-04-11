@@ -4,20 +4,32 @@ class Validator(object):
     def __init__(self,gameState):
         self.gameState = gameState
     def validateMove(self,move):
-        if move.typ=="build":
+        #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard
+        if move.typ=="build" and (self.gameState.phase== 'buildsettle' or self.gameState.phase== 'buildroad'):
+            if move.structure == 'city':
+                return False
+            if not self.checkLocation(move.playerid,move.structure,move.location,self.gameState.phase):
+                return False
+        elif move.typ=="build" and self.gameState.phase== 'standard':
             if not self.checkResources(move.playerid,move.structure):
                 return False
-            if not self.checkLocation(move.playerid,move.structure,move.location):
+            if not self.checkLocation(move.playerid,move.structure,move.location, 'standard'):
                 return False
-        elif move.typ == "robber":
+        elif move.typ == "robber" and self.gameState.phase == 'moverobber':
             return move.location != self.gameState.board.robberPos
-        elif move.typ == "takecard":
+        elif move.typ == "takecard" and self.gameState.phase == 'chooseplayer':
             if move.target ==move.playerid:
                 return False
             robberLocation = self.gameState.board.robberPos
             for cornerID in self.gameState.board.tileTbl[robberLocation]:
                 if self.gameState.board.corners[cornerID].buildingPlayerID == move.target:
                     return True
+            return False
+        elif move.typ == "endturn" and self.gameState.phase == 'standard':
+            return True
+        elif move.typ == "discard" and self.gameState.phase == 'discard':
+            return self.gameState.players[move.playerid].resources[move.card] >0
+        else:
             return False
 
 
@@ -30,7 +42,7 @@ class Validator(object):
             return playerResources['wheat']>=2 and playerResources['ore']>=3
         if buildingTag == "road":
             return playerResources['brick']>=1 and playerResources['wood']>=1
-    def checkLocation(self,playerID, buildingTag, location):
+    def checkLocation(self,playerID, buildingTag, location, phase):
         
         if buildingTag == "settlement": #check location empty
             corner = self.gameState.board.corners[location]
@@ -40,6 +52,8 @@ class Validator(object):
                 nextCorner = road.corners[0] if corner is road.corners[1] else road.corners[1]
                 if nextCorner.buildingTag!=None:
                     return False
+            if phase == 'buildsettle':
+                return True
             hasRoad = False
             for road in corner.edges: #Next to Color Road
                 if road.playerID==playerID:
