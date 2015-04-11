@@ -17,16 +17,18 @@ class TestEnv(Environment):
         self.curr = random.sample([-1,1], 1)[0]
 
     def getSensors(self):
+        print "Get sensors"
         obs = zeros(1)
         obs[0] = self.curr
         return obs
 
     def performAction(self, action):
+        print "Perform action"
         increment = sign((action[0] - 0.5)*2) * sign(self.curr)
         if increment > 0:
             self.good_actions += 1
-            if self.good_actions % 50 == 0:
-                print "Good: %d" % self.good_actions
+#            if self.good_actions % 50 == 0:
+#                print "Good: %d" % self.good_actions
         self.counter += increment
         self.curr = random.sample([-1,1], 1)[0]
 

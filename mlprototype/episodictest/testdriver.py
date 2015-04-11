@@ -1,10 +1,10 @@
 from scipy import *
 import sys, time
 
-from ravn import RestrictedActionValueNetwork
+from pybrain.rl.learners.valuebased import ActionValueNetwork
 from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import Q, SARSA, NFQ
-from pybrain.rl.experiments import Experiment
+from pybrain.rl.experiments.episodic import EpisodicExperiment
 from pybrain.rl.environments import Task
 from tasktest import TestTask
 from envtest import TestEnv
@@ -12,13 +12,18 @@ from envtest import TestEnv
 env = TestEnv()
 task = TestTask(env)
 
-controller = RestrictedActionValueNetwork(1, 2)
+controller = ActionValueNetwork(1, 2)
 learner = NFQ()
 agent = LearningAgent(controller, learner)
-experiment = Experiment(task, agent)
+experiment = EpisodicExperiment(task, agent)
 
+i = 0
 while True:
-    experiment.doInteractions(100)
+    experiment.doEpisodes(1)
     agent.learn()
     agent.reset()
-    print "Cycle"
+    i += 1
+    print "Cycle: %d" %i
+    if i > 60:
+        agent.learning = False
+
