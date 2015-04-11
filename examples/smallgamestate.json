@@ -1,0 +1,62 @@
+{
+	"CornerStates" : [ 
+		{
+			"edges" : [null, 0, 3], 
+			"buildings" : {
+				"playerID" : null, 
+				"quality" : "settlement" 
+				}
+		},
+		{
+			"edges" : [null, null, null], 
+			"buildings" : {
+				"playerID" : null, 
+				"quality" : "settlement" 
+				}
+		}
+		],
+	"PlayerStates" : [
+		{
+			"resources" : {
+				"brick" :  1,
+				"wood"	:  1,
+				"sheep" :  1,
+				"wheat" :  1,
+				"ore"	:  1
+			},
+			"devcards"  : [],
+			"trade" : {
+				"brick" :  4,
+				"wood"	:  4,
+				"sheep" :  4,
+				"wheat" :  4,
+				"ore"	:  4
+			},
+			"score" : 2
+		},
+		{
+			"resources" : {
+				"brick" :  0,
+				"wood"	:  0,
+				"sheep" :  0,
+				"wheat" :  4,
+				"ore"	:  0
+			},
+			"devcards"  : [],
+			"trade" : {
+				"brick" :  3,
+				"wood"	:  4,
+				"sheep" :  2,
+				"wheat" :  4,
+				"ore"	:  4
+			},
+			"score" : 9
+		}
+	],
+	"RobberLocation" : "A",
+	"LongestRoad": 1,
+	"LargestArmy" : 0,
+	"Turn": 2,
+	"GameProgress": "Ended"
+}
+
