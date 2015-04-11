@@ -1,5 +1,5 @@
 from random import shuffle
-from copy import copy
+import copy
 
 class GameBoard(object):
     def __init__(self):
@@ -7,7 +7,7 @@ class GameBoard(object):
         self.edges = {} #(id1,id2)->CornerEdge
         self.tiles = {}
         self.buildingCounts = {'road':[0,0,0,0],'settlement':[0,0,0,0],'city':[0,0,0,0]} #building->[p1,p2,p3]
-        self.possibleTiles = ['desert','Ore','Ore','Ore','Wood','Wood','Wood','Wood','Brick','Brick','Brick','Wool','Wool','Wool','Wool','Wheat','Wheat','Wheat','Wheat']
+        self.possibleTiles = ['desert','ore','ore','ore','wood','wood','wood','wood','brick','brick','brick','sheep','sheep','sheep','sheep','wheat','wheat','wheat','wheat']
         self.harvestNumber = [5,2,6,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11]
         shuffle(self.possibleTiles)
         self.cornerTbl = {0:(1,8,None),1:(None,2,0),2:(3,10,1),3:(None,4,2),4:(5,12,3),5:(None,6,4),6:(None,14,5),
@@ -97,28 +97,49 @@ class GameBoard(object):
             c.accept(v)
         for t in self.tiles.itervalues():
             t.accept(v)
+        for e in self.edges.itervalues():
+            e.accept(v)
+
     def getRobberPos(self):
         return self.robberPos
 
     def getLongestRoad(self):
+        playerRoads = [0,0,0,0]
         for c in self.corners:
             visitedCorners = []
             startCorner = c
             roadLength = 0
-            self.recurseRoad
+            for i in range(4):
+                curDist = self.recurseRoad(c, 0, visitedCorners, i)
+                if curDist >playerRoads[i]:
+                    playerRoads[i]=curDist
+        print playerRoads
+
 
             
                 #print road
-    def recurseRoad(self,c,dist, visitedCorners):
-        visitedCorners = visitedCorners.copy()
+    def recurseRoad(self,c,dist, visitedCorners, playerID):
+        visitedCorners = copy.copy(visitedCorners)
         visitedCorners.append(c)
-        print dist
+        maxDist =dist
         for road in c.edges:
             if road.hasRoad:
+                if road.playerID!= playerID:
+                    continue
+
                 corner1 = road.corners[0]
                 corner2 = road.corners[1]
                 nextCorner = corner2 if c is corner1 else corner1
-                recurseRoad(nextCorner,dist+1,visitedCorners)
+                if nextCorner.buildingPlayerID!= None and nextCorner.buildingPlayerID!=playerID:
+                    curDist= dist+1
+                    if curDist>maxDist:
+                        maxDist = curDist
+                elif not nextCorner in visitedCorners:
+                    curDist =self.recurseRoad(nextCorner,dist+1,visitedCorners, playerID)
+                    if curDist>maxDist:
+                        maxDist = curDist
+        return maxDist
+
 
         
 
@@ -141,10 +162,11 @@ class Corner(object):
             del self.tiles[0]
 
     def addBuilding(self,playerID, buildingTag):
-        self.buildingTag=playerID
-        self.buildingPlayerID=buildingTag
+        self.buildingTag=buildingTag
+        self.buildingPlayerID=playerID
     def accept(self, v):
         v.visit(self)
+
 
 class Tile(object):
     def __init__(self,tileID, resource,number):
@@ -164,14 +186,10 @@ class CornerEdge(object):
     def addRoad(self, playerID):
         self.hasRoad = True
         self.playerID = playerID
+    def accept(self,v):
+        v.visit(self)
     def __str__(self):
         return "Road (%d,%d),%s"%(self.corners[0].nodeID,self.corners[1].nodeID,self.hasRoad)
-
-class LongestRoad:
-    def __init__(self):
-        self.board = GameBoard()
-    def getLongestRoad():
-        pass
 
 #board = GameBoard()
 #board.addRoad(0,1,3)

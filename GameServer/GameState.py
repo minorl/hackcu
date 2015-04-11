@@ -5,13 +5,12 @@ class GameState(object):
     def __init__(self, nplayers):
         self.board = GameBoard()
         self.players = [PlayerState(i) for i in range(0, nplayers)]
-        self.longestroad = None
-        self.largestarmy = None
-        self.turn = 0
+        self.longestroad = None #int - PlayerId
+        self.largestarmy = None #int - PlayerId
+        self.turn = 0 #int - PlayerId
         #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard
         self.phase = None
-        self.progress = 'going'
-        self.lastroll = None
+        self.lastroll = None #int - Roll value
 
     def accept(self, v):
         v.visit(self)
@@ -34,13 +33,13 @@ class GameState(object):
         s = self.board.getCount(player, 'settlement')
         army = 2 if (player == self.largestarmy) else 0
         road = 2 if (player == self.longestroad) else 0
-        vpcards = self.player.cards[vp]
+        vpcards = self.players[player].cards['vp']
         self.players[player].score = c*2 + s + army + road
 
     def addBuilding(self, player, building, corner):
         self.board.addBuilding(corner, player, building)
-    def addRoad(self, a, b, player):
-        self.board.addRoad(a,b,player)
+    def addRoad(self, player, corner1, corner2):
+        self.board.addRoad(corner1,corner2,player)
 
     def updateRemaining(self, player):
         c = self.board.getCount(player, 'city')
