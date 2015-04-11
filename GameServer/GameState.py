@@ -5,13 +5,12 @@ class GameState(object):
     def __init__(self, nplayers):
         self.board = GameBoard()
         self.players = [PlayerState(i) for i in range(0, nplayers)]
-        self.longestroad = None
-        self.largestarmy = None
-        self.turn = 0
+        self.longestroad = None #int - PlayerId
+        self.largestarmy = None #int - PlayerId
+        self.turn = 0 #int - PlayerId
         #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard
         self.phase = None
-        self.progress = 'going'
-        self.lastroll = None
+        self.lastroll = None #int - Roll value
 
     def accept(self, v):
         v.visit(self)
