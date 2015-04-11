@@ -97,9 +97,9 @@ function create() {
                 y = total_y_offset + circle_y_offset * odd_offsets[i];
             }
 
-            var circle = new Phaser.Circle(x, y);
-            drawCorner(x, y, 20);
-            // var circle = new Phaser.Circle(total_x_offset + )
+            var circle = new Phaser.Circle(x, y, 20);
+            corners.push(circle);
+            // drawCorner(x, y, 20);
             h_offset += 0.5;
         }
     }
@@ -119,12 +119,26 @@ function create() {
                 y = total_y_offset + circle_y_offset * (odd_offsets[9 - i]);
             }
 
-            var circle = new Phaser.Circle(x, y);
-            drawCorner(x, y, 20);
+            var circle = new Phaser.Circle(x, y, 20);
+            corners.push(circle);
+            // drawCorner(x, y, 20);
             h_offset += 0.5;
         }
     }
 
+    game.input.onDown.add(clicked, this);
+
+}
+
+clicked = function(pointer) {
+    // console.log(corners);
+    // console.log(game.input.activePointer.positionDown.x + ": " + game.input.activePointer.positionDown.y);
+    for (var ii = 0; ii < corners.length; ii++ ) {
+        if (corners[ii].contains(game.input.activePointer.positionDown.x, game.input.activePointer.positionDown.y)) {
+            console.log(ii);
+            break;
+        }
+    }
 }
 
 function drawTile(x, y) {
