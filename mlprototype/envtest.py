@@ -10,8 +10,9 @@ class TestEnv(Environment):
 	inDim = 1
 	outDim = 1
 	numActions = 2
-	def __init__():
-		super()
+	def __init__(self):
+		super(TestEnv, self).__init__()
+		self.good_actions = 0
 		self.counter = 0
 		self.curr = random.sample([-1,1], 1)[0]
 
@@ -21,8 +22,12 @@ class TestEnv(Environment):
 		return obs
 
 	def performAction(self, action):	
-		print "Performing action: + " + str(action)
-		self.counter += self.curr * numpy.sign(action[0])
+		increment = sign((action[0] - 0.5)*2) * sign(self.curr)
+		if increment > 0:
+			self.good_actions += 1
+			if self.good_actions % 50 == 0:
+				print "Good: %d" % self.good_actions
+		self.counter += increment
 		self.curr = random.sample([-1,1], 1)[0]
 
 	def reset(self):

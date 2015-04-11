@@ -3,7 +3,10 @@ from pybrain.rl.environments.task import Task
 
 class TestTask(Task):
 	def __init__(self, environment):
-		super()
+		self.last = 0
+		super(TestTask, self).__init__(environment)
 
 	def getReward(self):
-		return self.env.counter
+		res = self.env.counter - self.last
+		self.last = self.env.counter
+		return res
