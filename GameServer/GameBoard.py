@@ -86,6 +86,10 @@ class GameBoard(object):
         return self.buildingCounts[buildingTag]
     def accept(self,v):
         v.visit(self)
+        for c in self.corners:
+            c.accept(v)
+        for t in self.tiles:
+            t.accept(v)
         
 
 
@@ -109,6 +113,8 @@ class Corner(object):
     def addBuilding(self,playerID, buildingTag):
         self.buildingTag=playerID
         self.buildingPlayerID=buildingTag
+    def accept(self, v):
+        v.visit(self)
 
 class Tile(object):
     def __init__(self,tileID, resource,number):
@@ -117,6 +123,8 @@ class Tile(object):
         self.number = number
     def __str__(self):
         return "Tile %s, %s,Freq %s"%(self.tileID, self.resource,self.number)
+    def accept(self,v):
+        v.visit(self)
 
 class CornerEdge(object):
     def __init__(self,corner1, corner2):
