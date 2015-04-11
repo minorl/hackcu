@@ -1,6 +1,6 @@
 
 
-    var game = new Phaser.Game(1200, 1000, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render});
+    var game = new Phaser.Game(1200, 1000, Phaser.AUTO, 'game-container', { preload: preload, create: create, update: update, render: render});
 
     var bmd;
 
