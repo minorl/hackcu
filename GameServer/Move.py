@@ -1,6 +1,7 @@
 class Move(object):
-    def __init__(self, typ, optiond = None):
+    def __init__(self, originator, typ, optiond = None):
         self.typ = typ
+        self.playerid = originator
         if typ == 'build':
             self.structure = optiond['structure']
             self.location = optiond['location']
