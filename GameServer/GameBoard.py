@@ -87,6 +87,11 @@ class GameBoard(object):
             self.buildingCounts["settlement"][playerID]-=1
             self.buildingCounts[buildingTag][playerID]+=1
         self.corners[cornerID].addBuilding(playerID,buildingTag)
+
+    def getEdge(self, corner1ID,corner2ID):
+        key = tuple(sorted((corner1ID,corner2ID)))
+        return self.edges[key]
+
     def getCount(self,playerID,buildingTag):
         return self.buildingCounts[buildingTag][playerID]
     def getCounts(self,buildingTag):
@@ -141,6 +146,7 @@ class GameBoard(object):
         return maxDist
 
 
+
         
 
 
@@ -189,7 +195,7 @@ class CornerEdge(object):
     def accept(self,v):
         v.visit(self)
     def __str__(self):
-        return "Road (%d,%d),%s"%(self.corners[0].nodeID,self.corners[1].nodeID,self.hasRoad)
+        return "Road (%d,%d),%s"%(self.corners[0].nodeID,self.corners[1].nodeID,self.playerID)
 
 #board = GameBoard()
 #board.addRoad(0,1,3)
