@@ -10,6 +10,7 @@ class GameState(object):
         self.turn = 0 #int - PlayerId
         #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard
         self.phase = None
+        self.phaseinfo = None
         self.lastroll = None #int - Roll value
 
     def accept(self, v):
