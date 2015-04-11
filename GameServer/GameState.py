@@ -5,11 +5,12 @@ class GameState(object):
     def __init__(self, nplayers):
         self.board = GameBoard()
         self.players = [PlayerState(i) for i in range(0, nplayers)]
-        self.robber = self.board.getDesert()
         self.longestroad = None
         self.largestarmy = None
         self.turn = 0
+        self.phase = None
         self.progress = 'going'
+        self.lastroll = None
 
     def accept(self, v):
         v.visit(self)
@@ -51,3 +52,5 @@ class GameState(object):
         self.players[player].remBuildings["road"] = startingRoads - r
         self.players[player].remBuildings["settlement"] = startingSettlement - s
 
+    def getRobber(self):
+        return self.board.getRobber()
