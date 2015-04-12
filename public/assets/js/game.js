@@ -287,6 +287,7 @@ function drawPieces(data) {
             var sheep_text = game.add.text(1100 + offset, 350 * c + 110, ": " + sheep, { font: "24px Arial", fill: players[player_state.id], align: "center" });
             var ore_text = game.add.text(1100 + offset, 350 * c + 170, ": " + ore, { font: "24px Arial", fill: players[player_state.id], align: "center" });
             var wheat_text = game.add.text(1100 + offset, 350 * c + 220, ": " + wheat, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var wheat_text = game.add.text(1100 + offset, 350 * c + 280, ": " + wood, { font: "24px Arial", fill: players[player_state.id], align: "center" });
             i += 1;
 
 
