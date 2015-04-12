@@ -94,8 +94,15 @@ class Controller(object):
         self.state.phase = 'moverobber'
         move = self.getValidMove(self.state.turn)
         self.doMove(move)
+        #list of playerid's next to robber time
         adjplayers = self.state.getAdjacentPlayer(self.state.getRobberTile())
-        if self.turn in adjplayer: adjplayers.remove(self.turn)
+        if self.turn in adjplayer:
+            adjplayers.remove(self.turn)
+        #remove players who have no cards from adjacent list
+        for i in xrange(len(adjplayers) - 1, -1, -1):
+            if self.state.countResources(adjplayers[i]) == 0:
+                del adjplayers[i]
+
         # Davis says to make code concise, use empty list as test for this
         # if statement otherwise he will hit irakli. I like irakli, so this list
         # is now the test for this if statement.
