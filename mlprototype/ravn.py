@@ -161,3 +161,4 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
 # 209-262: place free settlement on node k - 209
 # 263-334: place free k-263rd road
 # 335: end turn
+# see notes.txt for more
