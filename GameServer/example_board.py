@@ -68,6 +68,7 @@ time.sleep(1)
 corner3 = board.corners[23]
 corner3.addBuilding(1,"settlement")
 updater.sendGameState(gs)
+time.sleep(1)
 
 #board.getLongestRoad()
 gs.players[0].resources['brick']=1
@@ -77,6 +78,8 @@ gs.players[0].resources['sheep']=1
 check = Validator(gs)
 gs.phase = 'standard'
 move1 = Move(0,'build',{'structure':'settlement', 'location':25})
+updater.sendGameState(gs)
+time.sleep(1)
 
 
 gs.players[1].resources['ore']=3
@@ -88,6 +91,8 @@ move2 = Move(1,'build',{'structure':'city', 'location':34})
 
 print check.validateMove(move1)
 print check.validateMove(move2)
+updater.sendGameState(gs)
+time.sleep(1)
 
 
 
