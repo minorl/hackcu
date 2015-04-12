@@ -82,6 +82,7 @@ function preload() {
         if (i != 7)
             game.load.image("number_" + i, 'assets/img/' + 'number_' + i + '.png');
     }
+    game.load.image("robber", 'assets/img/robber.png');
 }
 
 function create() {
@@ -220,6 +221,12 @@ function drawTile(x, y, tile_node) {
 
         die.scale.x = 0.5;
         die.scale.y = 0.5;
+    } else {
+        var robber = new Phaser.Sprite(game, x + 45, y + 60, "robber");
+
+        dieLayer.add(robber);
+        robber.scale.x = 0.5;
+        robber.scale.y = 0.5;
     }
 
     tiles.push(sprite);
