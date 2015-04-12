@@ -13,7 +13,7 @@ class Controller(object):
         self.state = GameState(self.nplayers)
         self.validator = Validator(self.state)
         self.logger = logging.getLogger(__name__)
-        if updater not None:
+        if updater is not None:
             self.update = ViewUpdater()
         else:
             self.update = updater
