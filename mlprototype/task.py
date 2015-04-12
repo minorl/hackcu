@@ -17,11 +17,11 @@ class SettleTask(EpisodicTask):
         state = self.env.state
         score = state.players[state.turn].score
         diff = score - self.last
-        reward = diff * abs(diff)
+        reward = diff * 10
         if state.phase == "ended":
             #win
             if score >= 10:
-                reward += 50
+                reward += 100
             #loss or stalemate
             else:
                 reward = score

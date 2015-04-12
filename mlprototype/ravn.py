@@ -1,13 +1,14 @@
 from pybrain.rl.learners.valuebased import ActionValueNetwork
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.utilities import one_to_n
+from time import sleep
 
 from scipy import argmax, array, r_, asarray, where
 import numpy as np
 
 resourceList = ["brick", "wood", "sheep", "wheat", "ore"]
-
 class RestrictedActionValueNetwork(ActionValueNetwork):
+
     def __init__(self, dimState, numActions, env, name=None):
         super(RestrictedActionValueNetwork, self).__init__(dimState, numActions, name)
         self.env = env
@@ -87,20 +88,23 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             valid = set([k for k in range(54) if validBool[k]])
 
             #Check for city upgrades
-            if myResources["ore"] >= 3 and myResources["wheat"] >= 2:
+            if myResources["ore"] >= 3 and myResources["wheat"] >= 2 and myState.remBuildings["city"] > 0:
                 for v in mySettles:
                     if v.buildingTag != "city":
                         moves.append(83 + v.nodeID)
 
             #build settlement
-            if myResources["wood"] >= 1 and myResources["sheep"] >= 1 and myResources["brick"] >= 1 and myResources["wheat"] >= 1:
-                print "%d can afford settlement" % whoami
-                for nodeID in valid & reachable:
-                    print "%d can build settlement at %d" %(whoami, nodeID)
+            if myResources["wood"] >= 1 and myResources["sheep"] >= 1 and myResources["brick"] >= 1 and myResources["wheat"] >= 1 and myState.remBuildings["settlement"] > 0:
+#                print "%d can afford settlement" % whoami
+#                RestrictedActionValueNetwork.validSettleLocations(board, True)
+#                print "Valid: %s Reachable: %s" % (str(valid), str(reachable))
+#                sleep(120)
+                for nodeID in (valid & reachable):
+ #                   print "%d can build settlement at %d" %(whoami, nodeID)
                     moves.append(nodeID + 29)
 
             #build road
-            if myResources["wood"] >= 1 and myResources["brick"] >= 1:
+            if myResources["wood"] >= 1 and myResources["brick"] >= 1 and myState.remBuildings["road"] > 0:
                 for (i,(_,edge)) in enumerate(board.edges.items()):
                     v,w = edge.corners
                     if not edge.hasRoad and (v.nodeID in reachable or w.nodeID in reachable):
@@ -125,7 +129,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
         return moves
 
     @staticmethod
-    def validSettleLocations(board):
+    def validSettleLocations(board, doPrint = False):
         valid = [True for i in range(54)]
         for v in board.corners:
             if v.buildingTag is not None:
@@ -147,8 +151,8 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
                     wCorner = e.corners[0] if current is e.corners[1] else e.corners[1]
                     w = wCorner.nodeID
                     if not visited[w]:
-                        visited[w] = True
-                        if wCorner.buildingPlayerID == playerID:
+                        if wCorner.buildingPlayerID is None or wCorner.buildingPlayerID == playerID:
+                            visited[w] = True
                             Q.insert(0,w)
         result =  [k for k in range(54) if visited[k]]
         return result

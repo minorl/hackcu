@@ -27,6 +27,8 @@ class AIPlayer(Player):
     def getMove(self, state):
         #print "Setting state"
         self.stateTransfer[0] = state
+        if state.phase == 'ended':
+            return Move(state.phase, 'endturn')
         self.cv.notify()
         self.cv.wait()
         self.cv.acquire()
@@ -58,7 +60,9 @@ class AIPlayer(Player):
             move = Move(whoami, 'build', {'location' : target, 'structure' : 'settlement'})
         # upgrade settlement
         elif action in range(83, 137):
-            move = Move(whoami, 'build', {'location' : action - 83, 'structure' : 'city'})
+            target = action - 83
+            print "Player: %d building city at %d" % (whoami, target)
+            move = Move(whoami, 'build', {'location' : target, 'structure' : 'city'})
         # build road
         elif action in range(137,209) or action in range (263,335):
             if action < 209:
@@ -78,7 +82,7 @@ class AIPlayer(Player):
             shifted = action - 336
             offer = resourceList[shifted/5]
             want = resourceList[shifted %5]
-            print "Player %d trading %s for %s" % (whoami, offer, want)
+            #print "Player %d trading %s for %s" % (whoami, offer, want)
             move = Move(whoami, 'navaltrade', {'offer': offer, 'want': want})
         else:
             raise Exception("Unrecognized action: %d" % action)
@@ -100,8 +104,9 @@ class AIPlayer(Player):
         agent = LearningAgent(controller, learner)
         experiment = EpisodicExperiment(task, agent)
         while True:
-            experiment.doEpisodes(100)
+            experiment.doEpisodes(10)
             print "Done with experiments"
             agent.learn()
+            print "Learned"
             agent.reset()
             print "Cycled"

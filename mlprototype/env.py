@@ -9,8 +9,8 @@ class SettleEnv(Environment):
         phaseDict[name] = i
     discreteStates = True
     discreteActions = True
-    inDim = 352
-    outDim = 1
+    inDim = 1
+    outDim = 352
     numActions = 361
     def __init__(self, cv, stateTransfer, actionTransfer):
         super(SettleEnv, self).__init__()
@@ -18,7 +18,6 @@ class SettleEnv(Environment):
         self.stateTransfer = stateTransfer
         self.actionTransfer = actionTransfer
         self.state = None
-        self.sensors = zeros(352)
         #Have to bootstrap into the wait/notify cycle
         self.cv.acquire()
         #Signal that bootstrapping was successful
@@ -28,6 +27,7 @@ class SettleEnv(Environment):
         self.valid_moves = []
 
     def getSensors(self):
+        self.sensors = zeros(352)
         #print "Getting sensors"
         #Feature engineering
         whoami = self.state.turn
@@ -134,4 +134,5 @@ class SettleEnv(Environment):
         self.stateTransfer[0] = None
 
     def reset(self):
+        print "Resetting env"
         pass
