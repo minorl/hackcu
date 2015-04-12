@@ -176,6 +176,9 @@ class Controller(object):
             #self.updateView()
         elif move.typ == 'trade':
             self.logger.error("TRADE MOVE NOT SUPPORTED")
+        elif move.typ == 'navaltrade':
+            self.state.removeResource(move.playerid,move.offer,4)
+            self.state.addResource(move.playerid,move.want,1)
         elif move.typ == 'robber':
             #set robber tile
             self.state.setRobberTile(move.location)
