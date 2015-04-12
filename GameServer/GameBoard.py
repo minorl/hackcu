@@ -144,7 +144,8 @@ class GameBoard(object):
                 if curDist >playerRoads[i]:
                     playerRoads[i]=curDist
         print playerRoads
-            
+    def setRobber(self,tileID):
+        self.robberPos = tileID
                 #print road
     def recurseRoad(self,c,dist, visitedCorners, playerID):
         visitedCorners = copy.copy(visitedCorners)
