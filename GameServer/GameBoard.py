@@ -43,12 +43,12 @@ class GameBoard(object):
         self.createEdges()
         self.createTiles()
         #print self.robberPos
-        #print [str(corner) for corner in self.corners] 
+        #print [str(corner) for corner in self.corners]
     def createCorners(self):
         for i in range(54):
             newCorner = Corner(i)
             self.corners.append(newCorner)
-        
+
     def createEdges(self):
         for i in range(54):
             startCorner = self.corners[i]
@@ -97,7 +97,8 @@ class GameBoard(object):
             if road.playerID== playerID:
                 return True
         return False
-
+    def getSurroundingResources(self, nodeid):
+        return self.corners[nodeid].getSurroundingResources()
     def getBuildings(self,dieRoll):
         settlements=[]
         # location = self.harvestNumber[dieRoll]
@@ -171,7 +172,7 @@ class GameBoard(object):
 
 
 
-        
+
 
 
 
@@ -190,6 +191,8 @@ class Corner(object):
         self.tiles.append(tile)
         if len(self.tiles)>3:
             del self.tiles[0]
+    def getSurroundingResources(self):
+        return [t.resource for t in tiles]
 
     def addBuilding(self,playerID, buildingTag):
         self.buildingTag=buildingTag
