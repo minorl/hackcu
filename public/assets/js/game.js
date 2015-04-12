@@ -401,6 +401,14 @@ function drawPieces(data) {
     } else {
         texts['last_roll'].text.setText("Roll : " + data.last_roll);
     }
+    
+    if (texts.turn_number == null) {
+        console.log("hi brocooliiiii");
+        var turn_num = game.add.text(1100, 250 * 3, "Turn : " + data.turn_number, {font: "24px Arial", fill: "black", align: "center"});
+        texts['turn_number'] = {"text": turn_num};
+    } else {
+        texts['turn_number'].text.setText("Turn : " + data.turn_number);
+    }
 
 }
 
