@@ -7,14 +7,15 @@ class TestEnv(Environment):
     random.seed()
     discreteStates = True
     discreteActions = True
-    inDim = 2
+    inDim = 1
     outDim =1000
-    numActions = 2
+    numActions = 3
     def __init__(self):
         super(TestEnv, self).__init__()
         self.total = 0
         self.date = 0
         self.build_curr()
+        self.valid_moves = [0,1,2]
 
     def build_curr(self):
         self.curr = []
@@ -25,9 +26,6 @@ class TestEnv(Environment):
         return self.curr
 
     def performAction(self, action):
-        if len(action) == 1:
-            print "Wrong"
-            raise Exception("")
         for i in self.curr:
             self.total +=  (i * (action[0] - 1))/10
         self.build_curr()
