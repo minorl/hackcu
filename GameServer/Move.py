@@ -23,4 +23,4 @@ class Move(object):
         else:
             raise Exception("Invalid move %s" % typ)
     def __repr__(self):
-        return "Move(%s,%s)" % (self.typ, str(self.optiond))
+        return "Move(%s,%s)" % (self.typ, self.playerid)
