@@ -47,6 +47,7 @@ class StateVisitor(visitor):
         self.state["turn"] = obj.turn
         self.state["last_roll"] = obj.lastroll
         self.state["phase"] = obj.phase
+        self.state["phase_info"] = obj.phaseinfo
     def visit_playerstate(self, obj):
         player_rep = {"id" : obj.playerid, "score" : obj.score, "resources" : obj.resources, "trade" : obj.trade, "cards" : obj.cards, "remaining_buildings" : obj.remBuildings}
         self.state["player_states"][obj.playerid] = player_rep

@@ -25,7 +25,7 @@ var bmd;
 var x_dist = 240;
 var y_dist = 210;
 var x_offset = 120;
-var total_x_offset = 25;
+var total_x_offset = -100;
 var total_y_offset = 25;
 
 // Variable to store the action after having clicked on an action button
@@ -41,7 +41,11 @@ var cornerLayer;
 // Group for pieces
 var pieceLayer;
 
+// Lookup for player id and the color
+var players = { '0': 'blue', '1': 'green', '2': 'orange', '3': 'red' }
+
 var sprites = ['ore', 'wheat', 'desert', 'water', 'wood', 'brick', 'sheep'];
+var icons = ['ore', 'wheat', 'wood', 'brick', 'sheep'];
 var pieces = ['settlement_blue', 'settlement_green', 'settlement_orange', 'settlement_red',
               'city_blue', 'city_green', 'city_orange', 'city_red'];
 var tiles = [] //size should be 19
@@ -53,13 +57,15 @@ var even_offsets = [0.25, 0.75, 1.75, 2.25, 3.25, 3.75];
 var odd_offsets = [0, 1, 1.5, 2.5, 3, 4];
 
 function preload() {
-    sprites.forEach(function(sprite) {
+    sprites.forEach(function (sprite) {
         game.load.image(sprite, 'assets/img/' + sprite + '.png');
     });
-    pieces.forEach(function(piece) {
+    pieces.forEach(function (piece) {
         game.load.image(piece, 'assets/img/' + piece + '.png');
     });
-
+    icons.forEach(function (icon) {
+        game.load.image(icon + "_icon", 'assets/img/' + icon + '_icon.png');
+    });
 }
 
 function create() {
@@ -115,7 +121,7 @@ function create() {
 
             var circle = new Phaser.Circle(x, y, 20);
             corners.push(circle);
-            drawPiece(x, y, pieces[Math.floor((Math.random() * 8))]);
+            // drawPiece(x, y, pieces[Math.floor((Math.random() * 8))]);
             // drawCorner(x, y, 20);
             h_offset += 0.5;
         }
@@ -142,13 +148,19 @@ function create() {
             var circle = new Phaser.Circle(x, y, 20);
             corners.push(circle);
             // drawCorner(x, y, 20);
-            drawPiece(x, y, pieces[Math.floor((Math.random() * 8))]);
+            // drawPiece(x, y, pieces[Math.floor((Math.random() * 8))]);
             h_offset += 0.5;
         }
     }
 
+
+
     console.log(corners);
     drawButtons();
+
+    $.getJSON("/data/examplegamestate.json", function(json) {
+        drawPieces(json); // this will show the info it in firebug console
+    });
 
     game.input.onDown.add(clicked, this);
 
@@ -199,21 +211,87 @@ function drawCorner(x, y, r) {
 }
 
 function drawPiece(x, y, piece_name) {
+    console.log(piece_name);
     var scale = 1;
     if (piece_name.indexOf('settlement') >= 0) {
-        x -= 15;
-        y -= 15;
-        scale = 0.5;
+        x -= 25;
+        y -= 25;
+        scale = 0.75;
     } else if (piece_name.indexOf('city') >= 0) {
-        x -= 20;
-        y -= 20;
-        scale = 0.6;
+        x -= 25;
+        y -= 25;
+        scale = 0.85;
     }
-    var sprite = new Phaser.Sprite(game, x, y, piece_name);
+    // var sprite = new Phaser.Sprite(game, x, y, piece_name);
 
-    pieceLayer.add(sprite);
-    sprite.scale.x = 0.5;
+    var sprite = game.add.sprite(x, y, piece_name);
+    sprite.scale.x = 0.75;
     sprite.scale.y = scale;
+}
+
+function drawPieces(data) {
+    data.corner_states.forEach(function (corner_state) {
+        if (corner_state.building_tag != null) {
+            console.log(corner_state);
+            var id = corner_state.id;
+            var c = corners[id];
+            drawPiece(c.x, c.y, corner_state.building_tag + '_' + players[corner_state.player_id]);
+        }
+    });
+
+    data.edge_states.forEach(function (edge_state) {
+        if (edge_state.player_id != null) {
+            var edge_conn = edge_state.corners;
+            var x1 = corners[edge_conn[0]].x;
+            var y1 = corners[edge_conn[0]].y;
+            var x2 = corners[edge_conn[1]].x;
+            var y2 = corners[edge_conn[1]].y;
+            drawRoad(x1, y1, x2, y2, players[edge_state.player_id]);
+        }
+    });
+
+    var i = 0;
+    data.player_states.forEach(function (player_state) {
+        var c = i;
+        if (player_state != null) {
+            var offset = 0;
+            if (i < 2) {
+                offset = 0;
+            } else {
+                c -= 2;
+                offset = 200;
+            }
+
+            var text = game.add.text(1000 + offset, 300 * c, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var resources = player_state.resources;
+            var brick = resources.brick;
+            var sheep = resources.sheep;
+            var ore = resources.ore;
+            var wheat = resources.wheat;
+            var brick_sprite = game.add.sprite(1000 + offset, 300 * c + 50, "brick_icon");
+            var sheep_sprite = game.add.sprite(1000 + offset, 300 * c + 100, "sheep_icon");
+            var ore_sprite = game.add.sprite(1005 + offset, 300 * c + 160, "ore_icon");
+            var wheat_sprite = game.add.sprite(1005 + offset, 300 * c + 210, "wheat_icon");
+
+            var brick_text = game.add.text(1100 + offset, 300 * c + 60, ": " + brick, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var sheep_text = game.add.text(1100 + offset, 300 * c + 110, ": " + sheep, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var ore_text = game.add.text(1100 + offset, 300 * c + 170, ": " + ore, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var wheat_text = game.add.text(1100 + offset, 300 * c + 220, ": " + wheat, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            i += 1;
+
+
+        }
+    });
+}
+
+function drawRoad(x1, y1, x2, y2, player) {
+    bmd.ctx.beginPath();
+    bmd.ctx.strokeStyle = player;
+    bmd.ctx.moveTo(x1, y1);
+    bmd.ctx.lineTo(x2, y2);
+    bmd.ctx.lineWidth = 8;
+    bmd.ctx.stroke();
+    bmd.dirty = true;
 }
 
 function drawBoard(tiles) {
