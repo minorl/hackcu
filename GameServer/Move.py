@@ -6,6 +6,10 @@ class Move(object):
         if typ == 'build':
             self.structure = optiond['structure']
             self.location = optiond['location']
+        if typ == 'getdevelopment':
+            pass
+        if typ == 'playdevelopment':
+            self.card = optiond['card']
         elif typ == 'trade':
             self.target = optiond['target']
             self.offer = optiond['offer']
