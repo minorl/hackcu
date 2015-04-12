@@ -15,7 +15,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
         #valid_moves = get_moves(state)
         #valid_moves = range(self.numActions)
         print "Setting valid moves"
-        valid_moves = RestrictedActionValueNetwork.get_valid_moves()
+        valid_moves = self.get_valid_moves()
         values = array([self.network.activate(r_[state, one_to_n(i, self.numActions)]) if i in valid_moves else np.NINF for i in range(self.numActions)])
         return values
 
@@ -28,7 +28,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             resources = state.players[whoami].resources
             return [ k for k in range(5) if  resources[resourceList[k]] > 0]
         elif phase == "buildsettle":
-            valid = validSettleLocations(board)
+            valid = RestrictedActionValueNetwork.validSettleLocations(board)
             return [ k + 209 for k in range(54) if valid[k]]
         elif phase == "buildroad":
             #identify settlement that has no road yet
@@ -76,7 +76,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             reachable = set([])
             for index in board.corners:
                 if len(reachable) is None or not v in reachable[v.nodeID]:
-                    reachable |= set(RestrictedActionValueNetwork.findLinkedNodes())
+                    reachable |= set(RestrictedActionValueNetwork.getLinkedNodes())
 
             #Locations with a large enough radius to settle at
             validBool = RestrictedActionValueNetwork.validSettleLocations(board)

@@ -16,7 +16,7 @@ class AIPlayer(Player):
         self.cv = Condition()
         self.stateTransfer = [None]
         self.actionTransfer = [None]
-e       mlThread = Thread(target=AIPlayer.mlDriver, args=(self.cv, self.stateTransfer, self.actionTransfer))
+        mlThread = Thread(target=AIPlayer.mlDriver, args=(self.cv, self.stateTransfer, self.actionTransfer) )
         mlThread.start()
         #Need to bootstrap into the lock handoff
         while self.actionTransfer[0] is None:
