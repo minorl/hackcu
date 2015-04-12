@@ -4,7 +4,7 @@ from PlayerState import PlayerState
 class GameState(object):
     def __init__(self, players):
         self.board = GameBoard()
-        self.players = [PlayerState(i) for i in range(0, nplayers)]
+        self.players = [PlayerState(i) for i in range(0, players)]
         self.longestroad = None #int - PlayerId
         self.largestarmy = None #int - PlayerId
         self.turn = None #int - PlayerId
