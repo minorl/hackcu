@@ -8,11 +8,21 @@ class SettleTask(EpisodicTask):
         super(SettleTask, self).__init__(environment)
 
     def isFinished(self):
-        return self.env.state.phase == "ended"
+        if self.env.state.phase == "ended":
+            print "Task says it's done"
+            return True
+        return False
 
     def getReward(self):
         state = self.env.state
-        score = ((state.players[state.turn].score)**2)
-        if state.phase == "ended" and state.phaseInfo == "stalemate":
-            score = score **0.5
+        score = state.players[state.turn].score
+        diff = score - self.last
+        reward = diff * abs(diff)
+        if state.phase == "ended":
+            #win
+            if score >= 10:
+                reward += 50
+            #loss or stalemate
+            else:
+                reward = score
         return score

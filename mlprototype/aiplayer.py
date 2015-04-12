@@ -73,6 +73,13 @@ class AIPlayer(Player):
             move = Move(whoami, 'build', {'location' : action - 209, 'structure' : 'settlement'})
         elif action == 335:
             move = Move(whoami, 'endturn')
+        #naval trading
+        elif action in range(336, 361):
+            shifted = action - 336
+            offer = resourceList[shifted/5]
+            want = resourceList[shifted %5]
+            print "Player %d trading %s for %s" % (whoami, offer, want)
+            move = Move(whoami, 'navaltrade', {'offer': offer, 'want': want})
         else:
             raise Exception("Unrecognized action: %d" % action)
 

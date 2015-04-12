@@ -152,7 +152,7 @@ class Controller(object):
 
     def getValidMove(self, player):
         self.updateView()
-        sleep(self.delay)
+        #sleep(self.delay)
         move = self.players[player].getMove(self.state)
         # loop until valid move receied
         while not self.isValid(move):

@@ -81,9 +81,9 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
 
             #Build up a set of reachable nodes form my settlements
             reachable = set([])
-            for index in board.corners:
-                if len(reachable) is None or not v.nodeID in reachable:
-                    reachable |= set(RestrictedActionValueNetwork.getLinkedNodes(board, v.nodeID, whoami))
+            for node in mySettles:
+                if len(reachable) is None or not node.nodeID in reachable:
+                    reachable |= set(RestrictedActionValueNetwork.getLinkedNodes(board, node.nodeID, whoami))
 
             #Locations with a large enough radius to settle at
             validBool = RestrictedActionValueNetwork.validSettleLocations(board)
@@ -98,20 +98,20 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             #build settlement
             if myResources["wood"] >= 1 and myResources["sheep"] >= 1 and myResources["brick"] >= 1 and myResources["wheat"] >= 1:
                 for nodeID in valid & reachable:
+                    print "%d can build settlement at %d" %(whoami, nodeID)
                     moves.append(nodeID + 29)
 
             #build road
-            print "Reachable: " + str(Reachable)
             if myResources["wood"] >= 1 and myResources["brick"] >= 1:
                 for (i,(_,edge)) in enumerate(board.edges.items()):
                     v,w = edge.corners
-                    if not edge.hasRoad and v in reachable or w in reachable:
+                    if not edge.hasRoad and (v.nodeID in reachable or w.nodeID in reachable):
                         moves.append(137 + i)
 
             #Naval trading
             base = 336
             for i, res in enumerate(resourceList):
-                if myResources["res"] >= 4:
+                if myResources[res] >= 4:
                     for k in range(5):
                         #see notes.txt
                         moves.append(base + i*5 + k)
@@ -151,7 +151,8 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
                     if not visited[w]:
                         visited[w] = True
                         Q.insert(0,w)
-        return [k for k in range(54) if visited[k]]
+        result =  [k for k in range(54) if visited[k]]
+        return result
 
 # 0-4: Discard resource k
 # 5-7: Choose player (whoami + k - 5) % 4
