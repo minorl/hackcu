@@ -21,20 +21,28 @@ class Controller(object):
             self.nextPlayerTurn()
 
     def setup(self):
+        # Send initial state for display
+        self.update.sendTiles(self.state)
         #Decide first player randomly
         self.state.turn = random.randrange(0,self.nplayers)
         builtcount = 0
-        while builtcount < self.nplayers * 2:
+        while builtcount < self.nplayers*2:
             self.state.phase = "buildsettle"
             self.updateView()
-            move = self.getValidMove(self.state.turn)
-            self.doMove(move)
+            bs_move = self.getValidMove(self.state.turn)
+            self.doMove(bs_move)
             self.state.phase = "buildroad"
             self.updateView()
             move = self.getValidMove(self.state.turn)
             self.doMove(move)
+            #if this is second settle built do resource init
+            if builtcount >= self.nplayers:
+                for rec in self.state.getSurroundingResources
+                    self.state.addResource(self.state.turn, rec, bs_move.location)
             self.nextPlayerTurn()
             builtcount += 1
+        #initial resource allocation
+
         self.state.phase = 'standard'
 
     def nextPlayerTurn(self):
@@ -49,7 +57,7 @@ class Controller(object):
         self.state.phase = 'standard'
 
     def updateView(self):
-        pass
+        self.update.sendGameState(self.state)
 
     def turnEnded(self):
         return self.state.phase == 'turnended'
@@ -110,6 +118,7 @@ class Controller(object):
         move = self.players[player].getMove(self.state)
         # loop until valid move receied
         while not self.isValid(move):
+            self.logger.error("INVALID MOVE RECEIVED: Player %d" % player)
             move = self.players[player].getMove(self.state)
         return move
 

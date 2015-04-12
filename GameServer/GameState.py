@@ -28,6 +28,9 @@ class GameState(object):
     def getRandomResource(self, player):
         return self.players[player].randomResource()
 
+    def getSurroundingResources(self, nodeid):
+        return self.board.getSurroundingResources(nodeid)
+
     def addCard(self, player, card):
         self.players[player].addCard(card)
     def removeCard(self, player, card):
