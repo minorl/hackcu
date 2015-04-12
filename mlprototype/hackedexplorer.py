@@ -27,7 +27,7 @@ class EpsilonHackedExplorer(DiscreteExplorer):
         """
         assert self.module
 
-        print "Getting moves"
+#        print "Getting moves"
         if random.random() < self.epsilon:
             outbuf[:] = array(pyrand.sample(self.env.valid_moves, 1))
         else:

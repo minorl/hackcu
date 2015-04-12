@@ -65,8 +65,9 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             raise Exception("naw fuck that")
             moves = [8,9]
         elif phase == "chooseplayer":
+            print "Choosing player"
             #state.phaseInfo is list of player ints
-            rotated = [(k - whoami)%5 for k in state.phaseinfo]
+            rotated = [(k - whoami)%4 for k in state.phaseinfo]
             moves = [k + 4 for k in rotated]
         elif phase == "standard":
             moves = []
