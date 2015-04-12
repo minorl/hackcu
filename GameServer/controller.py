@@ -19,7 +19,7 @@ class Controller(object):
             self.update = updater
 
         self.delay = 1
-
+        self.stalematecond = 50
     def play(self):
         self.setup()
         while not self.gameEnded():
@@ -30,9 +30,9 @@ class Controller(object):
 
     def end(self):
         #tell everyone the game is over
-        for player in players:
-            player.getMove(self.state)
         self.updateView()
+        for player in self.players:
+            player.getMove(self.state)
 
     def setup(self):
         # Send initial state for display
@@ -79,7 +79,7 @@ class Controller(object):
             self.doMove(move)
             self.state.updateAllScores()
         self.state.phase = 'standard'
-
+        self.state.numturns += 1
     def updateView(self):
         self.update.sendGameState(self.state)
 
@@ -88,7 +88,7 @@ class Controller(object):
             self.state.phase = 'ended'
             self.state.phaseinfo = 'won'
             return True
-        elif self.state.numturns >= 500:
+        elif self.state.numturns >= self.stalematecond:
             self.state.phase = 'ended'
             self.state.phaseinfo = 'stalemate'
             return True
