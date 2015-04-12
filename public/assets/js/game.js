@@ -79,7 +79,8 @@ function preload() {
         game.load.image(icon + "_icon", 'assets/img/' + icon + '_icon.png');
     });
     for (var i = 2; i <= 12; i++) {
-        game.load.image("number_" + i, 'assets/img/' + 'number_' + i + '.png');
+        if (i != 7)
+            game.load.image("number_" + i, 'assets/img/' + 'number_' + i + '.png');
     }
 }
 
