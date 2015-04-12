@@ -4,17 +4,20 @@ class Validator(object):
     def __init__(self,gameState):
         self.gameState = gameState
     def validateMove(self,move):
+        print move.typ, self.gameState.phase
         #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard
         if move.typ=="build" and (self.gameState.phase== 'buildsettle' or self.gameState.phase== 'buildroad'):
             if move.structure == 'city':
                 return False
             if not self.checkLocation(move.playerid,move.structure,move.location,self.gameState.phase):
                 return False
+            return True
         elif move.typ=="build" and self.gameState.phase== 'standard':
             if not self.checkResources(move.playerid,move.structure):
                 return False
             if not self.checkLocation(move.playerid,move.structure,move.location, 'standard'):
                 return False
+            return True
         elif move.typ == "robber" and self.gameState.phase == 'moverobber':
             return move.location != self.gameState.board.robberPos
         elif move.typ == "takecard" and self.gameState.phase == 'chooseplayer':
