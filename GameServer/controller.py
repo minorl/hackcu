@@ -3,6 +3,7 @@ from Validator import Validator
 from view_updater import ViewUpdater
 import random
 import logging
+from time import sleep
 
 class Controller(object):
     def __init__(self, players):
@@ -12,10 +13,10 @@ class Controller(object):
         self.validator = Validator(self.state)
         self.logger = logging.getLogger(__name__)
         self.update = ViewUpdater()
-
+        self.delay = 1
     def play(self):
         self.setup()
-        while self.notEnded():
+        while not self.turnEnded():
             self.roll() #resource/bandit
             self.takeTurn() #actions
             self.nextPlayerTurn()
@@ -37,8 +38,9 @@ class Controller(object):
             self.doMove(move)
             #if this is second settle built do resource init
             if builtcount >= self.nplayers:
-                for rec in self.state.getSurroundingResources():
-                    self.state.addResource(self.state.turn, rec, bs_move.location)
+                for rec in self.state.getSurroundingResources(bs_move.location):
+                    if rec != 'desert':
+                        self.state.addResource(self.state.turn, rec, 1)
             self.nextPlayerTurn()
             builtcount += 1
         #initial resource allocation
@@ -60,7 +62,7 @@ class Controller(object):
         self.update.sendGameState(self.state)
 
     def turnEnded(self):
-        return self.state.phase == 'turnended'
+        return self.state.phase == 'endturn'
 
     def roll(self):
         self.state.lastroll = random.randint(1,6) + random.randint(1,6)
@@ -85,7 +87,7 @@ class Controller(object):
             #robber movement
             self.moveRobber()
         else: #resource collection
-            for (r,p,b) in self.state.getBuildings(self.lastroll):
+            for (r,p,b) in self.state.getBuildings(self.state.lastroll):
                 mult = 1 if b == 'settlement' else 2
                 self.state.addResource(p, r, mult)
             self.updateView()
@@ -96,9 +98,9 @@ class Controller(object):
         move = self.getValidMove(self.state.turn)
         self.doMove(move)
         #list of playerid's next to robber
-        adjplayers = self.state.getAdjacentPlayer(self.state.getRobberTile())
-        if self.state.turn in adjplayer:
-            adjplayers.remove(self.turn)
+        adjplayers = self.state.getAdjacentPlayers(self.state.getRobberTile())
+        if self.state.turn in adjplayers:
+            adjplayers.remove(self.state.turn)
         #remove players who have no cards from adjacent list
         for i in xrange(len(adjplayers) - 1, -1, -1):
             if self.state.countResources(adjplayers[i]) == 0:
@@ -107,18 +109,20 @@ class Controller(object):
         # Davis says to make code concise, use empty list as test for this
         # if statement otherwise he will hit irakli. I like irakli, so this list
         # is now the test for this if statement.
-        if adjplayer:
-            self.state.phaseinfo = adjplayer
+        if adjplayers:
+            self.state.phaseinfo = adjplayers
             self.state.phase = 'chooseplayer'
             move = self.getValidMove()
             self.doMove(move)
 
     def getValidMove(self, player):
         self.updateView()
+        sleep(self.delay)
         move = self.players[player].getMove(self.state)
         # loop until valid move receied
         while not self.isValid(move):
-            self.logger.error("INVALID MOVE RECEIVED: Player %d" % player)
+            sleep(self.delay)
+            self.logger.error("INVALID MOVE RECEIVED: Player %d, Move: %s" % (player,str(move)))
             move = self.players[player].getMove(self.state)
         return move
 
@@ -167,23 +171,23 @@ class Controller(object):
             # update remaining building count
             self.state.updateRemaining(move.playerid)
             self.updateView()
-        elif mov.typ == 'trade':
+        elif move.typ == 'trade':
             self.logger.error("TRADE MOVE NOT SUPPORTED")
-        elif mov.typ == 'robber':
+        elif move.typ == 'robber':
             #set robber tile
             self.state.setRobberTile(move.location)
-        elif mov.typ == 'takecard':
+        elif move.typ == 'takecard':
             # Remove card from target, add to initiator
             rectoremove = self.state.getRandomResource()
             self.state.removeResource(move.target, rectoremove, 1)
             self.state.addResource(move.playerid, rectoremove, 1)
             self.updateView()
-        elif mov.typ == 'playcard':
+        elif move.typ == 'playcard':
             #yell when things are important
             self.logger.error("PLAY CARD MOVE NOT SUPPORTED")
-        elif mov.typ == 'discard':
+        elif move.typ == 'discard':
             # Need to add ability to discard more than one at a time
             self.state.removeResource(move.playerid, move.card)
-        elif mov.typ == 'endturn':
+        elif move.typ == 'endturn':
             self.state.phase = 'endturn'
 

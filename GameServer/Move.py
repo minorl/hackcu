@@ -2,6 +2,7 @@ class Move(object):
     def __init__(self, originator, typ, optiond = None):
         self.typ = typ
         self.playerid = originator
+        self.optiond = optiond
         if typ == 'build':
             self.structure = optiond['structure']
             self.location = optiond['location']
@@ -23,4 +24,8 @@ class Move(object):
         else:
             raise Exception("Invalid move %s" % typ)
     def __repr__(self):
-        return "Move(%s,%s)" % (self.typ, self.playerid)
+        return "Move(%s,%s, %s)" % (self.typ, self.playerid, str(self.optiond))
+
+    def __str__(self):
+        return self.__repr__()
+
