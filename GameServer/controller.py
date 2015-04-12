@@ -13,7 +13,7 @@ class Controller(object):
         self.state = GameState(self.nplayers)
         self.validator = Validator(self.state)
         self.logger = logging.getLogger(__name__)
-        if updater not None:
+        if updater is not None:
             self.update = ViewUpdater()
         else:
             self.update = updater
@@ -46,8 +46,10 @@ class Controller(object):
         turnorderbckwd = copy.deepcopy(turnorder)
         turnorderbckwd.reverse()
         turnorder += turnorderbckwd
+        print "Turnorder: %s" %(str(turnorder))
 
         for i in range(0, self.nplayers*2):
+            self.state.turn = turnorder[i]
             self.state.phase = "buildsettle"
             self.updateView()
             bs_move = self.getValidMove(self.state.turn)
@@ -62,7 +64,6 @@ class Controller(object):
                     if rec != 'desert':
                         self.state.addResource(self.state.turn, rec, 1)
 
-            self.state.turn = (i + self.nplayers*2) % (self.nplayers*2)
         #initial resource allocation
 
         self.state.phase = 'standard'
@@ -191,7 +192,7 @@ class Controller(object):
             currentlongest = 0
             if self.state.longestroad is not None:
                 currentlongest = l[self.state.longestroad]
-            newlongestid = None
+            newlongestid = self.state.longestroad
             for i in xrange(0, self.nplayers):
                 if l[i] > currentlongest:
                     newlongestid = i
