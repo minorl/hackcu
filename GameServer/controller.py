@@ -63,9 +63,9 @@ class Controller(object):
         return self.state.phase == 'turnended'
 
     def roll(self):
-        self.lastroll = random.randint(1,6) + random.randint(1,6)
+        self.state.lastroll = random.randint(1,6) + random.randint(1,6)
         self.updateView()
-        if self.lastroll == 7:
+        if self.state.lastroll == 7:
             turn = self.state.turn
             #resource discard
             for i in range(0, self.nplayers):
@@ -97,7 +97,7 @@ class Controller(object):
         self.doMove(move)
         #list of playerid's next to robber
         adjplayers = self.state.getAdjacentPlayer(self.state.getRobberTile())
-        if self.turn in adjplayer:
+        if self.state.turn in adjplayer:
             adjplayers.remove(self.turn)
         #remove players who have no cards from adjacent list
         for i in xrange(len(adjplayers) - 1, -1, -1):
@@ -149,21 +149,21 @@ class Controller(object):
             # check to see if building changed longest road count
             l = self.state.getLongestRoads()
             currentlongest = 0
-            if self.longestroad is not None:
-                currentlongest = l[self.longestroad]
+            if self.state.longestroad is not None:
+                currentlongest = l[self.state.longestroad]
             newlongestid = None
             for i in xrange(0, self.nplayers):
                 if l[i] > currentlongest:
                     newlongestid = i
                     currentlongest = l[i]
             #need to check if road breaking resulted in a tie
-            if newlongestid != self.longestroad:
+            if newlongestid != self.state.longestroad:
                 if currentlongest<5:
-                    self.longestroad = None
+                    self.state.longestroad = None
                 elif l.count(currentlongest) != 1:
-                    self.longestroad = None
+                    self.state.longestroad = None
                 else:
-                    self.longestroad = newlongestid
+                    self.state.longestroad = newlongestid
             # update remaining building count
             self.state.updateRemaining(move.playerid)
             self.updateView()
