@@ -49,7 +49,7 @@ class Controller(object):
         print "Turnorder: %s" %(str(turnorder))
 
         for i in range(0, self.nplayers*2):
-            self.state.turn = turnorder[i] 
+            self.state.turn = turnorder[i]
             self.state.phase = "buildsettle"
             self.updateView()
             bs_move = self.getValidMove(self.state.turn)
@@ -192,7 +192,7 @@ class Controller(object):
             currentlongest = 0
             if self.state.longestroad is not None:
                 currentlongest = l[self.state.longestroad]
-            newlongestid = None
+            newlongestid = self.state.longestroad
             for i in xrange(0, self.nplayers):
                 if l[i] > currentlongest:
                     newlongestid = i

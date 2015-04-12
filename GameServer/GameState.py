@@ -54,8 +54,14 @@ class GameState(object):
 
     def addBuilding(self, player, building, corner):
         self.board.addBuilding(corner, player, building)
+        self.players[player].remBuildings[building] -= 1
+        if building == 'city':
+            self.players[player].remBuildings['settlement'] += 1
+
     def addRoad(self, player, corner1, corner2):
         self.board.addRoad(corner1,corner2,player)
+        self.players[player].remBuildings["road"] -= 1
+
     def getLongestRoads(self):
         return self.board.getLongestRoad()
     # This could be too slow!! Called when things are built

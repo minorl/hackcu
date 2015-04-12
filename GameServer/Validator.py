@@ -45,11 +45,18 @@ class Validator(object):
 
     def checkResources(self, playerID,buildingTag):
         playerResources = self.gameState.players[playerID].resources
+        remainingBuildings = self.gameState.players[playerID].remBuildings
         if buildingTag == "settlement":
+            if remainingBuildings[buildingTag]==0:
+                return False
             return playerResources['brick']>=1 and playerResources['wood']>=1 and playerResources['wheat']>=1 and playerResources['sheep']>=1
         if buildingTag == "city":
+            if remainingBuildings[buildingTag]==0:
+                return False
             return playerResources['wheat']>=2 and playerResources['ore']>=3
         if buildingTag == "road":
+            if remainingBuildings[buildingTag]==0:
+                return False
             return playerResources['brick']>=1 and playerResources['wood']>=1
     def checkLocation(self,playerID, buildingTag, location, phase):
         
