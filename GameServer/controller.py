@@ -4,6 +4,7 @@ from view_updater import ViewUpdater
 import random
 import logging
 from time import sleep
+import time
 import copy
 
 class Controller(object):
@@ -18,14 +19,17 @@ class Controller(object):
         else:
             self.update = updater
 
-        self.delay = 1
-        self.stalematecond = 500
+        self.delay = 0.5
+        self.stalematecond = 2000
     def play(self):
         self.setup()
         while not self.gameEnded():
+            currTime = int(round(time.time() * 1000))
             self.roll() #resource/bandit
             self.takeTurn() #actions
             self.nextPlayerTurn()
+            while int(round(time.time() * 1000)) < currTime + 250:
+                pass
         self.end()
 
     def end(self):
@@ -152,11 +156,9 @@ class Controller(object):
 
     def getValidMove(self, player):
         self.updateView()
-        #sleep(self.delay)
         move = self.players[player].getMove(self.state)
         # loop until valid move receied
         while not self.isValid(move):
-            sleep(self.delay)
             self.logger.error("INVALID MOVE RECEIVED: Player %d, Move: %s, Phase %s" % (player,str(move), self.state.phase))
             move = self.players[player].getMove(self.state)
         return move

@@ -131,8 +131,9 @@ class SettleEnv(Environment):
         #actionTransfer[0] is now none
         #get new state
         self.state = self.stateTransfer[0]
+        if self.state.phase == "ended":
+            print "Hit end state"
         self.stateTransfer[0] = None
 
     def reset(self):
-        print "Resetting env"
         pass

@@ -37,16 +37,17 @@ while True:
     c.play()
     logger.debug("Game ended, starting new game")
     data_dict['games_completed'] += 1
-    previous_games.append(c.GameState.numturns)
-    time.sleep(10)
+    previous_games.append(c.state.numturns)
+    time.sleep(5) 
     
-    data_dict['last_game_turns'] = c.GameState.numturns
+    data_dict['last_game_turns'] = c.state.numturns
     data_dict['last_10_avg'] = moving_average(previous_games)
     data_dict['all_game_avg'] = int(numpy.mean(previous_games))
 
-    print "%d \t %d \t %d \t %d" % (games_completed, data_dict['last_game_turns'], data_dict['last_10_avg'], data_dict['all_game_avg'])
+    print "%d \t %d \t %d \t %d" % (data_dict['games_completed'], data_dict['last_game_turns'], data_dict['last_10_avg'], data_dict['all_game_avg'])
     
-    update.s.send(json.dumps({'stats': data_dict}))
-    update.waitForAck()
+    #update.s.send(json.dumps({'stats': data_dict}))
+    #Waiting for ack
+    #update.waitForAck()
     
 

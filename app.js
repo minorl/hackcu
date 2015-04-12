@@ -20,8 +20,9 @@ var gameServer = net.createServer(function(conn) {
     // Handle data from client
     conn.on("data", function(data) {
         data = JSON.parse(data);
-        console.log(data.phase);
+        //console.log(data.phase);
         if (data.stats != null) {
+            console.log(data);
             for (var c in clients) {
                 var remote = clients[c].remote;
                 remote.displayData(data);
@@ -97,7 +98,7 @@ eurecaServer.attach(server);
 
 //detect client connection
 eurecaServer.onConnect(function (conn) {
-    console.log('New client id=%s', conn.id, conn.remoteAddress);
+    //console.log('New client id=%s', conn.id, conn.remoteAddress);
 
     // The getClient method provide a proxy allowing us to call remote client functions
     var remote = eurecaServer.getClient(conn.id);
