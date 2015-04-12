@@ -64,7 +64,7 @@ class Controller(object):
                 self.state.turn = i
                 nresources = self.state.countResources(i)
                 if nresources > 7:
-                    reqresources = nresources/2
+                    reqresources = (nresources+1)/2
                     self.state.phase = "discard"
                     while nresources > reqresources:
                         # number you need to discard
