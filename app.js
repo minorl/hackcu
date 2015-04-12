@@ -16,11 +16,17 @@ var gameServer = net.createServer(function(conn) {
         // Close the server
     });
 
+    // YEA RPC!!!
     // Handle data from client
     conn.on("data", function(data) {
         data = JSON.parse(data);
         console.log(data.phase);
-        if (data.phase == "ended") {
+        if (data.stats != null) {
+            for (var c in clients) {
+                var remote = clients[c].remote;
+                remote.displayData(data);
+            }
+        } else if (data.phase == "ended") {
             for (var c in clients) {
                 var remote = clients[c].remote;
                 initial_board = null;
@@ -45,12 +51,6 @@ var gameServer = net.createServer(function(conn) {
         writeAck();
     });
 
-    // Let's response with a hello message
-//    conn.write(
-//        JSON.stringify(
-//            { response: "Hey there client!" }
-//        )
-//    );
 });
 
 
@@ -73,7 +73,7 @@ var _ = require('lodash');
 var Eureca = require('eureca.io');
 var clients = {};
 
-var eurecaServer = new Eureca.Server({ allow: ['setId', 'redraw', 'initBoard', 'restart']});
+var eurecaServer = new Eureca.Server({ allow: ['setId', 'redraw', 'initBoard', 'restart', 'displayData']});
 
 app.use(express.static(__dirname + '/public'));
 

@@ -30,6 +30,10 @@ var eurecaClientSetup = function () {
     eurecaClient.exports.restart = function(data) {
         location.reload();
     }
+
+    eurecaClient.exports.displayData = function(data) {
+        displayStats(data);
+    }
 }
 
 var game = new Phaser.Game(1600, 1200, Phaser.AUTO, 'game-container', { preload: preload, create: eurecaClientSetup, update: update, render: render});
@@ -460,4 +464,8 @@ function onDown(sprite, pointer) {
     // game = new Phaser.Game(1400, 1200, Phaser.AUTO, 'game-container', { preload: preload, create: eurecaClientSetup, update: update, render: render});
     location.reload();
 
+}
+
+function displayStats(data) {
+    console.log(data);
 }
