@@ -2,6 +2,7 @@ from threading import Condition, Lock, Thread
 from mlprototype.env import SettleEnv
 from mlprototype.task import SettleTask
 from mlprototype.ravn import RestrictedActionValueNetwork
+from mlprototype.hackedexplorer import EpsilonHackedExplorer
 from pybrain.rl.learners.valuebased import NFQ
 from pybrain.rl.agents.learning import LearningAgent
 from pybrain.rl.experiments.episodic import EpisodicExperiment
@@ -14,7 +15,7 @@ class AIPlayer(Player):
         self.cv = Condition()
         self.stateTransfer = [None]
         self.actionTransfer = [None]
-        mlThread = Thread(target=AIPlayer.mlDriver, args=(self.cv, self.stateTransfer, self.actionTransfer))
+e       mlThread = Thread(target=AIPlayer.mlDriver, args=(self.cv, self.stateTransfer, self.actionTransfer))
         mlThread.start()
         #Need to bootstrap into the lock handoff
         while self.actionTransfer[0] is None:
@@ -42,6 +43,7 @@ class AIPlayer(Player):
         task = SettleTask(env)
         controller = RestrictedActionValueNetwork(stateDim, numMoves)
         learner = NFQ()
+        learner.explorer = EpsilonHackedExplorer(env)
         agent = LearningAgent(controller, learner)
         experiment = EpisodicExperiment(task, agent)
         while True:

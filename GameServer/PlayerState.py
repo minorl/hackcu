@@ -1,3 +1,5 @@
+import random
+
 class PlayerState(object):
     """Holds state for players"""
     def __init__(self, num):
@@ -17,7 +19,11 @@ class PlayerState(object):
         self.cards[card] += 1
     def removeCard(self, card):
         self.cards[card] -= 1
-
+    def getRandomResource(self):
+        reclist = []
+        for (rec, n) in self.resourceCount:
+            reclist += [rec]*n
+        return random.sample(reclist, 1)[0]
     def resourceCount(self):
         return sum(self.resources.itervalues())
     def getScore(self):
