@@ -186,13 +186,13 @@ function create() {
 
 
     //console.log(corners);
-    drawButtons();
+    // drawButtons();
 
     // $.getJSON("/data/examplegamestate.json", function(json) {
     //     drawPieces(json); // this will show the info it in firebug console
     // });
 
-    game.input.onDown.add(clicked, this);
+    // game.input.onDown.add(clicked, this);
 
 
 }
