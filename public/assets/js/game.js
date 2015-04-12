@@ -41,6 +41,9 @@ var cornerLayer;
 // Group for pieces
 var pieceLayer;
 
+// Lookup for player id and the color
+var players = { '0': 'blue', '1': 'green', '2': 'orange', '3': 'red' }
+
 var sprites = ['ore', 'wheat', 'desert', 'water', 'wood', 'brick', 'sheep'];
 var pieces = ['settlement_blue', 'settlement_green', 'settlement_orange', 'settlement_red',
               'city_blue', 'city_green', 'city_orange', 'city_red'];
@@ -115,7 +118,7 @@ function create() {
 
             var circle = new Phaser.Circle(x, y, 20);
             corners.push(circle);
-            drawPiece(x, y, pieces[Math.floor((Math.random() * 8))]);
+            // drawPiece(x, y, pieces[Math.floor((Math.random() * 8))]);
             // drawCorner(x, y, 20);
             h_offset += 0.5;
         }
@@ -142,13 +145,19 @@ function create() {
             var circle = new Phaser.Circle(x, y, 20);
             corners.push(circle);
             // drawCorner(x, y, 20);
-            drawPiece(x, y, pieces[Math.floor((Math.random() * 8))]);
+            // drawPiece(x, y, pieces[Math.floor((Math.random() * 8))]);
             h_offset += 0.5;
         }
     }
 
+
+
     console.log(corners);
     drawButtons();
+
+    $.getJSON("/data/examplegamestate.json", function(json) {
+        drawPieces(json); // this will show the info it in firebug console
+    });
 
     game.input.onDown.add(clicked, this);
 
@@ -199,6 +208,7 @@ function drawCorner(x, y, r) {
 }
 
 function drawPiece(x, y, piece_name) {
+    console.log(piece_name);
     var scale = 1;
     if (piece_name.indexOf('settlement') >= 0) {
         x -= 15;
@@ -214,6 +224,17 @@ function drawPiece(x, y, piece_name) {
     pieceLayer.add(sprite);
     sprite.scale.x = 0.5;
     sprite.scale.y = scale;
+}
+
+function drawPieces(data) {
+    data.corner_states.forEach(function (corner) {
+        if (corner.building_tag != null) {
+            console.log(corner);
+            var id = corner.id;
+            var c = corners[id];
+            drawPiece(c.x, c.y, corner.building_tag + '_' + players[corner.player_id]);
+        }
+    });
 }
 
 function drawBoard(tiles) {
