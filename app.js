@@ -38,8 +38,9 @@ gameServer.listen(31337, "localhost", function () {
 var _ = require('lodash');
 
 var Eureca = require('eureca.io');
+var clients = {};
 
-var eurecaServer = new Eureca.Server();
+var eurecaServer = new Eureca.Server({ allow: ['setId']});
 
 app.use(express.static(__dirname + '/public'));
 
@@ -64,6 +65,23 @@ eurecaServer.attach(server);
 //detect client connection
 eurecaServer.onConnect(function (conn) {
     console.log('New client id=%s', conn.id, conn.remoteAddress);
+
+    // The getClient method provide a proxy allowing us to call remote client functions
+    var remote = eurecaServer.getClient(conn.id);
+
+    // Register the client
+    clients[conn.id] = { id: conn.id, remote: remote };
+
+    remote.setId(conn.id);
+    console.log(clients);
+});
+
+eurecaServer.exports.tryMove = function (move) {
+    console.log(move);
+}
+
+eurecaServer.onDisconnect(function (conn) {
+    console.log('Client disconnected ', conn.id);
 });
 
 eurecaServer.exports.hello = function () {
