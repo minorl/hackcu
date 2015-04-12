@@ -3,13 +3,13 @@ from pybrain.rl.environments.episodic import EpisodicTask
 
 class SettleTask(EpisodicTask):
     def __init__(self, environment):
-        self.counter = 0
         self.last = 0
+        self.env = environment
         super(SettleTask, self).__init__(environment)
 
     def isFinished(self):
-        self.counter += 1
-        return self.counter % 1000 == 0
+        return self.env.state.phase == "ended"
 
     def getReward(self):
-        return 0
+        state = self.env.state
+        return ((state.players[state.turn].score)**2) + 100 * (state.phase == "ended")

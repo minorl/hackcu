@@ -6,7 +6,7 @@ var net = require('net');
 
 var initial_board;
 var current_state;
-
+var writeAck;
 var gameServer = net.createServer(function(conn) {
     console.log("Server: Client connected");
 
@@ -32,6 +32,7 @@ var gameServer = net.createServer(function(conn) {
                 remote.redraw(data);
             }
         }
+        writeAck();
     });
 
     // Let's response with a hello message
@@ -42,11 +43,21 @@ var gameServer = net.createServer(function(conn) {
 //    );
 });
 
+
+var gameServer2 = net.createServer(function(conn2) {
+
+    writeAck = function() {
+        conn2.write("ack");
+    }
+});
 // Listen for connections
 gameServer.listen(31337, "localhost", function () {
     console.log("Server: Listening");
 });
 
+gameServer2.listen(31338, "localhost", function() {
+    console.log("GameServer2: Listening");
+});
 var _ = require('lodash');
 
 var Eureca = require('eureca.io');

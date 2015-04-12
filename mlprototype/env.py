@@ -3,7 +3,6 @@ from scipy import zeros
 from numpy import sign
 import numpy as np
 import threading
-
 class SettleEnv(Environment):
     phaseDict = {}
     for i, name in enumerate(["discard", "buildsettle", "buildroad", "moverobber", "respondtrade", "chooseplayer", "standard", "ended"]):
@@ -19,17 +18,17 @@ class SettleEnv(Environment):
         self.stateTransfer = stateTransfer
         self.actionTransfer = actionTransfer
         self.state = None
-        self.sensors = zeros(356)
+        self.sensors = zeros(352)
         #Have to bootstrap into the wait/notify cycle
-#        self.cv.acquire()
+        self.cv.acquire()
         #Signal that bootstrapping was successful
         self.actionTransfer[0] = True
-#        self.cv.wait()
-        print "Rolling"
+        self.cv.wait()
+        self.state = self.stateTransfer[0]
+        self.valid_moves = []
 
     def getSensors(self):
-        print "Getting sensors"
-        sensors = zeros(15)
+        #print "Getting sensors"
         #Feature engineering
         whoami = self.state.turn
         board = self.state.board
@@ -67,7 +66,6 @@ class SettleEnv(Environment):
             self.sensors[i] = d
             i += 1
  
-        print "Max i: " + str(i)
         return self.sensors
     #Returns a tuple of:
     #-2d array expectedresources[playerId][resourcetype]
@@ -125,7 +123,7 @@ class SettleEnv(Environment):
 
     def performAction(self, action):
         #choose move
-        print "Applying action"
+        #print "Applying action"
         self.actionTransfer[0] = action[0]
         self.cv.notify()
         self.cv.wait()
@@ -134,5 +132,6 @@ class SettleEnv(Environment):
         #get new state
         self.state = self.stateTransfer[0]
         self.stateTransfer[0] = None
+
     def reset(self):
         pass

@@ -20,6 +20,7 @@ var eurecaClientSetup = function () {
 
     eurecaClient.exports.redraw = function(data) {
         drawPieces(data);
+        console.log(data);
     }
 
     eurecaClient.exports.initBoard = function(data) {
@@ -151,7 +152,7 @@ function create() {
     }
 
 
-    console.log(corners);
+    //console.log(corners);
 
     for (var i = 6; i >= 4; i--) {
         // Offset that will change by 0.5 each j loop
@@ -178,7 +179,7 @@ function create() {
 
 
 
-    console.log(corners);
+    //console.log(corners);
     drawButtons();
 
     // $.getJSON("/data/examplegamestate.json", function(json) {
@@ -254,7 +255,7 @@ function drawCorner(x, y, r) {
 }
 
 function drawPiece(x, y, piece_name) {
-    console.log(piece_name);
+    //console.log(piece_name);
     var scale = 1;
     if (piece_name.indexOf('settlement') >= 0) {
         x -= 25;
@@ -275,7 +276,7 @@ function drawPiece(x, y, piece_name) {
 function drawPieces(data) {
     data.corner_states.forEach(function (corner_state) {
         if (corner_state.building_tag != null) {
-            console.log(corner_state);
+            //console.log(corner_state);
             var id = corner_state.id;
             var c = corners[id];
             drawPiece(c.x, c.y, corner_state.building_tag + '_' + players[corner_state.player_id]);
@@ -402,8 +403,8 @@ function render () {
 
 function onDown(sprite, pointer) {
     if (sprite.key == "settlement") {
-        console.log("Build settlement");
+        //console.log("Build settlement");
         action = 1;
     }
-    console.log("You clicked me!");
+    //console.log("You clicked me!");
 }

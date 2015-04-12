@@ -3,6 +3,7 @@ from pybrain.tools.shortcuts import buildNetwork
 from pybrain.utilities import one_to_n
 
 from scipy import argmax, array, r_, asarray, where
+import numpy as np
 
 resourceList = ["brick", "wood", "sheep", "wheat", "ore"]
 
@@ -14,7 +15,6 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
     def getActionValues(self, state):
         #valid_moves = get_moves(state)
         #valid_moves = range(self.numActions)
-        print "Setting valid moves"
         valid_moves = self.get_valid_moves()
         values = array([self.network.activate(r_[state, one_to_n(i, self.numActions)]) if i in valid_moves else np.NINF for i in range(self.numActions)])
         return values
@@ -22,46 +22,53 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
     #operate on self.env
     def get_valid_moves(self):
         state = self.env.state
+#        print "RAVN State: " + str(state)
         board = state.board
         whoami = state.turn
-        if phase == "discard":
+        phase = state.phase
+        if phase == "ended":
+            moves = [0]
+        elif phase == "discard":
+            print "Discarding"
             resources = state.players[whoami].resources
-            return [ k for k in range(5) if  resources[resourceList[k]] > 0]
+            moves = [ k for k in range(5) if  resources[resourceList[k]] > 0]
         elif phase == "buildsettle":
             valid = RestrictedActionValueNetwork.validSettleLocations(board)
-            return [ k + 209 for k in range(54) if valid[k]]
+            moves = [ k + 209 for k in range(54) if valid[k]]
         elif phase == "buildroad":
             #identify settlement that has no road yet
             found = None
             for v in board.corners:
-                hasRoad = False
-                for _,e in v.edges:
-                    hasRoad |= e.hasRoad
-                if not hasRoad:
-                    found = v
-                    break
+                if v.buildingPlayerID == whoami:
+                    hasRoad = False
+                    for e in v.edges:
+                        hasRoad |= e.hasRoad
+                    if not hasRoad:
+                        found = v
+                        break
 
             indices = []
             edgeList = [e for _,e in board.edges.items()]
             for e in found.edges:
-                indices.append(edgeList.indexOf(e))
+                indices.append(edgeList.index(e))
             indices.sort()
-            return [k + 263 for k in indices]
+            moves = [k + 263 for k in indices]
 
         elif phase == "moverobber":
+            print "Moving robber"
             #get robber location
-            raise Exception("naw fuck that")
             moves = []
             for i in range(0,19):
                 if ord(board.robberPos) != ord('A') + i:
-                    moves += 10 + i
-            return moves
+                    moves += [10 + i]
         elif phase == "respondtrade":
-            return [8,9]
+            raise Exception("naw fuck that")
+            moves = [8,9]
         elif phase == "chooseplayer":
+            print "Choosing player"
             #state.phaseInfo is list of player ints
-            rotated = [(k - whoami)%5 for k in state.phaseInfo]
-            return [k + 4 for k in rotated]
+            rotated = [(k - whoami)%4 for k in state.phaseinfo]
+            moves = [k + 4 for k in rotated]
         elif phase == "standard":
             moves = []
             myState = state.players[whoami]
@@ -75,8 +82,8 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             #Build up a set of reachable nodes form my settlements
             reachable = set([])
             for index in board.corners:
-                if len(reachable) is None or not v in reachable[v.nodeID]:
-                    reachable |= set(RestrictedActionValueNetwork.getLinkedNodes())
+                if len(reachable) is None or not v.nodeID in reachable:
+                    reachable |= set(RestrictedActionValueNetwork.getLinkedNodes(board, v.nodeID, whoami))
 
             #Locations with a large enough radius to settle at
             validBool = RestrictedActionValueNetwork.validSettleLocations(board)
@@ -89,42 +96,44 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
 
             #build settlement
             if myResources["wood"] >= 1 and myResources["sheep"] >= 1 and myResources["brick"] >= 1 and myResources["wheat"] >= 1:
-                for nodeId in valid & reachable:
-                    moves.append(nodeId + 29)
+                for nodeID in valid & reachable:
+                    moves.append(nodeID + 29)
 
             #build road
-            for (i,(_,edge)) in enumerate(board.edges.items):
+            for (i,(_,edge)) in enumerate(board.edges.items()):
                 v,w = edge.corners
                 if not edge.hasRoad and v in reachable or w in reachable:
                     moves.append(137 + i)
 
             moves.append(335)
-            moves.sort()
-            return moves
 
         else:
             raise Exception("Unrecognized phase: " + str(phase))
+
+        moves.sort()
+        self.env.valid_moves = moves
+        return moves
 
     @staticmethod
     def validSettleLocations(board):
         valid = [True for i in range(54)]
         for v in board.corners:
             if v.buildingTag is not None:
-                for edge in v.egdes:
-                    for node in edge:
-                        valid[node.nodeId] = False
+                for edge in v.edges:
+                    for node in edge.corners:
+                        valid[node.nodeID] = False
         return valid
 
     #initial is a nodeID
     @staticmethod
-    def getLinkedNodes(board, initial, playerId):
+    def getLinkedNodes(board, initial, playerID):
         Q = [initial]
         visited = [False for k in range(54)]
         while len(Q) > 0:
             v = Q.pop()
             current = board.corners[v]
             for e in current.edges:
-                if e.hasRoad and e.playerId == playerId:
+                if e.hasRoad and e.playerID == playerID:
                     wCorner = e.corners[0] if current is e.corners[1] else e.corners[1]
                     w = wCorner.nodeID
                     if not visited[w]:

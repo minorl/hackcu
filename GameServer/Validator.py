@@ -18,6 +18,9 @@ class Validator(object):
             if not self.checkLocation(move.playerid,move.structure,move.location, 'standard'):
                 return False
             return True
+        elif move.typ=="development" and self.gameState.phase== 'standard':
+            playerResources = self.gameState.players[move.playerid].resources
+            return playerResources['sheep']>=1 and playerResources['wheat']>=1 and playerResources['ore']>=1
         elif move.typ == "robber" and self.gameState.phase == 'moverobber':
             return move.location != self.gameState.board.robberPos
         elif move.typ == "takecard" and self.gameState.phase == 'chooseplayer':

@@ -8,6 +8,7 @@ from pybrain.rl.learners.valuebased import NFQ
 from pybrain.rl.agents.learning import LearningAgent
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 from GameServer.Player import Player
+from GameServer.Move import Move
 
 class AIPlayer(Player):
     def __init__(self):
@@ -24,7 +25,7 @@ class AIPlayer(Player):
         self.cv.acquire()
 
     def getMove(self, state):
-        print "Setting state"
+        #print "Setting state"
         self.stateTransfer[0] = state
         self.cv.notify()
         self.cv.wait()
@@ -34,8 +35,9 @@ class AIPlayer(Player):
         self.actionTransfer[0] = None
         whoami = state.turn
         #Discard
+        action = int(action)
         if action in range(0,5):
-            move = Move(whoami, 'discard', {'card':resourceList[i]})
+            move = Move(whoami, 'discard', {'card':resourceList[action]})
         #Choose player
         elif action in range(5, 8):
             target = ((action - 4) + whoami) % 4
@@ -47,8 +49,13 @@ class AIPlayer(Player):
         elif action in range(10, 29):
             move = Move(whoami, 'robber', {'location': chr(ord('A') + action - 10)})
         # build settlement
-        elif action in range(29, 83):
-            move = Move(whoami, 'build', {'location' : action - 29, 'structure' : 'settlement'})
+        elif action in range(29, 83) or action in range(209, 263):
+            if action < 83:
+                target = action - 29
+            else:
+                target = action - 209
+            print "Player: %d building settlement at %d" % (whoami, target)
+            move = Move(whoami, 'build', {'location' : target, 'structure' : 'settlement'})
         # upgrade settlement
         elif action in range(83, 137):
             move = Move(whoami, 'build', {'location' : action - 83, 'structure' : 'city'})
@@ -59,6 +66,7 @@ class AIPlayer(Player):
             else:
                 _, edge = state.board.edges.items()[action-263]
             v1,v2 = edge.corners
+            print "Player: %d building road from %d->%d" % (whoami, v1.nodeID, v2.nodeID)
             move = Move(whoami, 'build', {'location' : (v1.nodeID, v2.nodeID), 'structure' : 'road'})
         # build free settlement
         elif action in range(209, 263):
@@ -74,12 +82,12 @@ class AIPlayer(Player):
     def mlDriver(cv, stateTransfer, actionTransfer):
         #parameter setup
         #dimensionality of state argument (could be less than stateTransfer)
-        stateDim = 1
+        stateDim = 352
         #Number of moves possible
-        numMoves = 2
+        numMoves = 356
         env = SettleEnv(cv, stateTransfer, actionTransfer)
         task = SettleTask(env)
-        controller = RestrictedActionValueNetwork(stateDim, numMoves)
+        controller = RestrictedActionValueNetwork(stateDim, numMoves, env)
         learner = NFQ()
         learner.explorer = EpsilonHackedExplorer(env)
         agent = LearningAgent(controller, learner)
