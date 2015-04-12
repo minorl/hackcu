@@ -15,7 +15,7 @@ class ViewUpdater(object):
         self.s.settimeout(None)
         host = 'localhost'
         port = 31337
-        #self.s.connect((host,port))
+        self.s.connect((host,port))
 
     def sendGameState(self, state):
         v = StateVisitor()
@@ -28,7 +28,7 @@ class ViewUpdater(object):
         v = InitialStateVisitor()
         state.accept(v)
         package = v.get_json()
-        #self.s.send(package)
+        yyself.s.send(package)
 
     def reinitialize(self):
         host = 'localhost'
