@@ -3,7 +3,6 @@ from scipy import zeros
 from numpy import sign
 import numpy as np
 import threading
-
 class SettleEnv(Environment):
     phaseDict = {}
     for i, name in enumerate(["discard", "buildsettle", "buildroad", "moverobber", "respondtrade", "chooseplayer", "standard", "ended"]):
@@ -29,7 +28,7 @@ class SettleEnv(Environment):
         self.valid_moves = []
 
     def getSensors(self):
-        print "Getting sensors"
+        #print "Getting sensors"
         #Feature engineering
         whoami = self.state.turn
         board = self.state.board
@@ -124,7 +123,7 @@ class SettleEnv(Environment):
 
     def performAction(self, action):
         #choose move
-        print "Applying action"
+        #print "Applying action"
         self.actionTransfer[0] = action[0]
         self.cv.notify()
         self.cv.wait()

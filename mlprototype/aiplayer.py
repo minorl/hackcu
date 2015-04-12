@@ -25,7 +25,7 @@ class AIPlayer(Player):
         self.cv.acquire()
 
     def getMove(self, state):
-        print "Setting state"
+        #print "Setting state"
         self.stateTransfer[0] = state
         self.cv.notify()
         self.cv.wait()

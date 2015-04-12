@@ -26,7 +26,7 @@ class GameState(object):
     def countResources(self, player):
         return self.players[player].resourceCount()
     def getRandomResource(self, player):
-        return self.players[player].randomResource()
+        return self.players[player].getRandomResource()
 
     def getSurroundingResources(self, nodeid):
         return self.board.getSurroundingResources(nodeid)

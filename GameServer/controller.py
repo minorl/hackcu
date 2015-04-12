@@ -66,7 +66,7 @@ class Controller(object):
 
     def roll(self):
         self.state.lastroll = random.randint(1,6) + random.randint(1,6)
-        self.updateView()
+        #self.updateView()
         if self.state.lastroll == 7:
             turn = self.state.turn
             #resource discard
@@ -90,7 +90,7 @@ class Controller(object):
             for (r,p,b) in self.state.getBuildings(self.state.lastroll):
                 mult = 1 if b == 'settlement' else 2
                 self.state.addResource(p, r, mult)
-            self.updateView()
+            #self.updateView()
         self.state.phase = 'standard'
 
     def moveRobber(self):
@@ -112,7 +112,7 @@ class Controller(object):
         if adjplayers:
             self.state.phaseinfo = adjplayers
             self.state.phase = 'chooseplayer'
-            move = self.getValidMove()
+            move = self.getValidMove(self.state.turn)
             self.doMove(move)
 
     def getValidMove(self, player):
@@ -134,15 +134,17 @@ class Controller(object):
             if move.structure == 'road':
                 # 1 brick, 1 wood
                 self.state.addRoad(move.playerid, move.location[0], move.location[1])
-                self.state.removeResource(move.playerid, 'brick', 1)
-                self.state.removeResource(move.playerid, 'wood', 1)
+                if self.state.phase != 'buildroad':
+                    self.state.removeResource(move.playerid, 'brick', 1)
+                    self.state.removeResource(move.playerid, 'wood', 1)
             else:
                 if move.structure == 'settlement':
                     # 1 brick, 1 wood, 1 wheat, 1 sheep settlement
-                    self.state.removeResource(move.playerid, 'wood', 1)
-                    self.state.removeResource(move.playerid, 'wheat', 1)
-                    self.state.removeResource(move.playerid, 'brick', 1)
-                    self.state.removeResource(move.playerid, 'sheep', 1)
+                    if self.state.phase != 'buildsettle':
+                        self.state.removeResource(move.playerid, 'wood', 1)
+                        self.state.removeResource(move.playerid, 'wheat', 1)
+                        self.state.removeResource(move.playerid, 'brick', 1)
+                        self.state.removeResource(move.playerid, 'sheep', 1)
                 elif move.structure == 'city':
                     # 2 wheat, 3 ore city
                     self.state.removeResource(move.playerid, 'wheat', 2)
@@ -170,7 +172,7 @@ class Controller(object):
                     self.state.longestroad = newlongestid
             # update remaining building count
             self.state.updateRemaining(move.playerid)
-            self.updateView()
+            #self.updateView()
         elif move.typ == 'trade':
             self.logger.error("TRADE MOVE NOT SUPPORTED")
         elif move.typ == 'robber':
@@ -178,16 +180,16 @@ class Controller(object):
             self.state.setRobberTile(move.location)
         elif move.typ == 'takecard':
             # Remove card from target, add to initiator
-            rectoremove = self.state.getRandomResource()
+            rectoremove = self.state.getRandomResource(move.target)
             self.state.removeResource(move.target, rectoremove, 1)
             self.state.addResource(move.playerid, rectoremove, 1)
-            self.updateView()
+            #self.updateView()
         elif move.typ == 'playcard':
             #yell when things are important
             self.logger.error("PLAY CARD MOVE NOT SUPPORTED")
         elif move.typ == 'discard':
             # Need to add ability to discard more than one at a time
-            self.state.removeResource(move.playerid, move.card)
+            self.state.removeResource(move.playerid, move.card, 1)
         elif move.typ == 'endturn':
             self.state.phase = 'endturn'
 

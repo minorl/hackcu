@@ -22,13 +22,14 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
     #operate on self.env
     def get_valid_moves(self):
         state = self.env.state
-        print "RAVN State: " + str(state)
+#        print "RAVN State: " + str(state)
         board = state.board
         whoami = state.turn
         phase = state.phase
         if phase == "ended":
             moves = [0]
         elif phase == "discard":
+            print "Discarding"
             resources = state.players[whoami].resources
             moves = [ k for k in range(5) if  resources[resourceList[k]] > 0]
         elif phase == "buildsettle":
@@ -54,16 +55,18 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             moves = [k + 263 for k in indices]
 
         elif phase == "moverobber":
+            print "Moving robber"
             #get robber location
             moves = []
             for i in range(0,19):
                 if ord(board.robberPos) != ord('A') + i:
                     moves += [10 + i]
         elif phase == "respondtrade":
+            raise Exception("naw fuck that")
             moves = [8,9]
         elif phase == "chooseplayer":
             #state.phaseInfo is list of player ints
-            rotated = [(k - whoami)%5 for k in state.phaseInfo]
+            rotated = [(k - whoami)%5 for k in state.phaseinfo]
             moves = [k + 4 for k in rotated]
         elif phase == "standard":
             moves = []
