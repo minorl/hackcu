@@ -149,8 +149,8 @@ class Controller(object):
             # check to see if building changed longest road count
             l = self.state.getLongestRoads()
             currentlongest = 0
-            if self.longestroad is not None:
-                currentlongest = l[self.longestroad]
+            if self.state.longestroad is not None:
+                currentlongest = l[self.state.longestroad]
             newlongestid = None
             for i in xrange(0, self.nplayers):
                 if l[i] > currentlongest:
