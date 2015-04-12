@@ -16,6 +16,8 @@ class Move(object):
         elif typ == 'playcard':
             self.card = optiond['card']
             self.target = optiond['target']
+        elif typ == 'discard':
+            self.card = optiond['card']
         elif typ == 'endturn':
             pass
         else:

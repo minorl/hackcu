@@ -1,6 +1,7 @@
 from random import shuffle
 import copy
 
+
 class GameBoard(object):
     def __init__(self):
         self.corners = []
@@ -87,6 +88,35 @@ class GameBoard(object):
             self.buildingCounts["settlement"][playerID]-=1
             self.buildingCounts[buildingTag][playerID]+=1
         self.corners[cornerID].addBuilding(playerID,buildingTag)
+
+    def getEdge(self, corner1ID,corner2ID):
+        key = tuple(sorted((corner1ID,corner2ID)))
+        return self.edges[key]
+    def hasColorRoad(self, cornerID, playerID):
+        for road in self.corners[cornerID].edges:
+            if road.playerID== playerID:
+                return True
+        return False
+
+    def getBuildings(self,dieRoll):
+        settlements=[]
+        # location = self.harvestNumber[dieRoll]
+        for t in self.tiles.itervalues():
+            if t.number == dieRoll:
+                for cornerID in self.tileTbl[t.tileID]:
+                    corner = self.corners[cornerID]
+                    if corner.buildingPlayerID!=None:
+                        settlements.append((t.resource, corner.buildingPlayerID,corner.buildingTag))
+        return settlements
+    def getAdjPlayers(self, tileID):
+        neighbors = []
+        for cornerID in self.tileTbl[tileID]:
+            corner = self.corners[cornerID]
+            if corner.buildingPlayerID!=None and corner.buildingPlayerID not in neighbors:
+                neighbors.append(corner.buildingPlayerID)
+        return neighbors
+
+
     def getCount(self,playerID,buildingTag):
         return self.buildingCounts[buildingTag][playerID]
     def getCounts(self,buildingTag):
@@ -114,8 +144,6 @@ class GameBoard(object):
                 if curDist >playerRoads[i]:
                     playerRoads[i]=curDist
         print playerRoads
-
-
             
                 #print road
     def recurseRoad(self,c,dist, visitedCorners, playerID):
@@ -139,6 +167,7 @@ class GameBoard(object):
                     if curDist>maxDist:
                         maxDist = curDist
         return maxDist
+
 
 
         
@@ -189,7 +218,7 @@ class CornerEdge(object):
     def accept(self,v):
         v.visit(self)
     def __str__(self):
-        return "Road (%d,%d),%s"%(self.corners[0].nodeID,self.corners[1].nodeID,self.hasRoad)
+        return "Road (%d,%d),%s"%(self.corners[0].nodeID,self.corners[1].nodeID,self.playerID)
 
 #board = GameBoard()
 #board.addRoad(0,1,3)

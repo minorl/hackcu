@@ -19,7 +19,7 @@ class SettleEnv(Environment):
         self.stateTransfer = stateTransfer
         self.actionTransfer = actionTransfer
         self.state = None
-        self.sensors = zeros(15)
+        self.sensors = zeros(351)
         #Have to bootstrap into the wait/notify cycle
 #        self.cv.acquire()
         #Signal that bootstrapping was successful
@@ -45,11 +45,11 @@ class SettleEnv(Environment):
             i += 1
 
         #Phase
-        self.sensors[i] = phaseDict[self.state.phase]
+        self.sensors[i] = SettleEnv.phaseDict[self.state.phase]
         i += 1
 
         #Expected resources
-        expectation, vertexpectation = getExpectedResources(board)
+        expectation, vertexpectation = SettleEnv.getExpectedResources(board)
         #shuffle the players so we are always first
         for pid in range(4):
             for resource in range(5):
@@ -62,12 +62,13 @@ class SettleEnv(Environment):
                 i += 1
 
         #distance to each vertex
-        distances = getDistance(board, whoami)
+        distances = SettleEnv.getDistances(board, whoami)
         for d in distances:
             self.sensors[i] = d
             i += 1
  
-    return self.sensors
+        print "Max i: " + str(i)
+        return self.sensors
     #Returns a tuple of:
     #-2d array expectedresources[playerId][resourcetype]
     #-2d array vertexpectation[vertexId][resourcetype
@@ -79,17 +80,18 @@ class SettleEnv(Environment):
         res = [[0 for rec in range(5)] for pid in range(4)]
         ver = [[0 for rec in range(5)] for vertex in board.corners]
         for vertex in board.corners:
-            pid = vertex.playerID
+            pid = vertex.buildingPlayerID
             if vertex.buildingTag is not None:
-                if buildingTag == "settlement":
+                if vertex.buildingTag == "settlement":
                     multiplier = 1
-                elif buildingTag == "city":
+                elif vertex.buildingTag == "city":
                     multiplier = 2
                 else:
                     raise Exception("Bad building tag: " + str(buildingTag))
                 for tile in vertex.tiles:
-                    res[pid][resourceDict[tile.resource]] += multiplier * prob(tile.number)
-                    ver[vertex][resourceDict[tile.resourceDict]] += prob(tile.number)
+                    if tile.resource != 'desert':
+                        res[pid][resourceDict[tile.resource]] += multiplier * prob(tile.number)
+                        ver[vertex.nodeID][resourceDict[tile.resource]] += prob(tile.number)
 
         return (res, ver)
 
@@ -98,12 +100,12 @@ class SettleEnv(Environment):
         distance = [100 for v in board.corners]
         searchPoints = []
         for v in board.corners:
-            if v.buildingPlayerId == playerId:
-                searchPoints.append(v.nodeId)
+            if v.buildingPlayerID == playerId:
+                searchPoints.append(v.nodeID)
             else:
                 for edge in v.edges:
                     if edge.playerID == playerId:
-                        searchPoints.append(v.nodeId)
+                        searchPoints.append(v.nodeID)
 
         for init in searchPoints:
             Q = [init]
@@ -113,9 +115,9 @@ class SettleEnv(Environment):
                 current = board.corners[v]
                 for e in current.edges:
                     if e.hasRoad == False:
-                        wCorner = e.corner2 if current is e.corner1 else e.corner1
+                        wCorner = e.corners[0] if current is e.corners[1] else e.corners[1]
                         if wCorner.buildingTag is None:
-                            w = wCorner.nodeId
+                            w = wCorner.nodeID
                             if distance[w] > distance[v] + 1:
                                 distance[w] = distance[v] + 1
                                 Q.insert(0, w)
