@@ -393,6 +393,15 @@ function drawPieces(data) {
 
         }
     });
+
+    if (texts.last_roll == null) {
+        console.log("HIIII");
+        var roll_text = game.add.text(1000, 250 * 3, "Roll : " + data.last_roll, { font: "24px Arial", fill: "black", align: "center" });
+        texts['last_roll'] = { "roll": data.last_roll, "text": roll_text };
+    } else {
+        texts['last_roll'].text.setText("Roll : " + data.last_roll);
+    }
+
 }
 
 function drawRoad(x1, y1, x2, y2, player) {
