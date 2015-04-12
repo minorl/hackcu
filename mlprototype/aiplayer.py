@@ -91,7 +91,7 @@ class AIPlayer(Player):
         #dimensionality of state argument (could be less than stateTransfer)
         stateDim = 352
         #Number of moves possible
-        numMoves = 356
+        numMoves = 361
         env = SettleEnv(cv, stateTransfer, actionTransfer)
         task = SettleTask(env)
         controller = RestrictedActionValueNetwork(stateDim, numMoves, env)
@@ -101,6 +101,7 @@ class AIPlayer(Player):
         experiment = EpisodicExperiment(task, agent)
         while True:
             experiment.doEpisodes(100)
+            print "Done with experiments"
             agent.learn()
             agent.reset()
             print "Cycled"
