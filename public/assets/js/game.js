@@ -32,7 +32,7 @@ var eurecaClientSetup = function () {
     }
 }
 
-var game = new Phaser.Game(1400, 1200, Phaser.AUTO, 'game-container', { preload: preload, create: eurecaClientSetup, update: update, render: render});
+var game = new Phaser.Game(1600, 1200, Phaser.AUTO, 'game-container', { preload: preload, create: eurecaClientSetup, update: update, render: render});
 
 var bmd;
 var x_dist = 240;
@@ -358,20 +358,20 @@ function drawPieces(data) {
                     offset = 200;
                 }
 
-                var player_name = game.add.text(1000 + offset, 350 * c, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
-                var player_score = game.add.text(1000 + offset + 100, 350 * c, ": " + player_state.score, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+                var player_name = game.add.text(1100 + offset, 350 * c, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
+                var player_score = game.add.text(1100 + offset + 100, 350 * c, ": " + player_state.score, { font: "24px Arial", fill: players[player_state.id], align: "center" });
 
-                var brick_sprite = game.add.sprite(1000 + offset, 350 * c + 50, "brick_icon");
-                var sheep_sprite = game.add.sprite(1000 + offset, 350 * c + 100, "sheep_icon");
-                var ore_sprite = game.add.sprite(1005 + offset, 350 * c + 160, "ore_icon");
-                var wheat_sprite = game.add.sprite(1005 + offset, 350 * c + 210, "wheat_icon");
-                var wood_sprite = game.add.sprite(1005 + offset, 350 * c + 270, "wood_icon");
+                var brick_sprite = game.add.sprite(1100 + offset, 350 * c + 50, "brick_icon");
+                var sheep_sprite = game.add.sprite(1100 + offset, 350 * c + 100, "sheep_icon");
+                var ore_sprite = game.add.sprite(1105 + offset, 350 * c + 160, "ore_icon");
+                var wheat_sprite = game.add.sprite(1105 + offset, 350 * c + 210, "wheat_icon");
+                var wood_sprite = game.add.sprite(1105 + offset, 350 * c + 270, "wood_icon");
 
-                var brick_text = game.add.text(1100 + offset, 350 * c + 60, ": " + brick, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-                var sheep_text = game.add.text(1100 + offset, 350 * c + 110, ": " + sheep, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-                var ore_text = game.add.text(1100 + offset, 350 * c + 170, ": " + ore, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-                var wheat_text = game.add.text(1100 + offset, 350 * c + 220, ": " + wheat, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-                var wood_text = game.add.text(1100 + offset, 350 * c + 280, ": " + wood, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+                var brick_text = game.add.text(1200 + offset, 350 * c + 60, ": " + brick, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+                var sheep_text = game.add.text(1200 + offset, 350 * c + 110, ": " + sheep, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+                var ore_text = game.add.text(1200 + offset, 350 * c + 170, ": " + ore, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+                var wheat_text = game.add.text(1200 + offset, 350 * c + 220, ": " + wheat, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+                var wood_text = game.add.text(1200 + offset, 350 * c + 280, ": " + wood, { font: "24px Arial", fill: players[player_state.id], align: "center" });
 
                 texts[players[player_state.id]] = { "brick": brick_text,
                                                 "sheep": sheep_text,
@@ -396,15 +396,15 @@ function drawPieces(data) {
 
     if (texts.last_roll == null) {
         console.log("HIIII");
-        var roll_text = game.add.text(1000, 250 * 3, "Roll : " + data.last_roll, { font: "24px Arial", fill: "black", align: "center" });
+        var roll_text = game.add.text(1100, 250 * 3, "Roll : " + data.last_roll, { font: "24px Arial", fill: "black", align: "center" });
         texts['last_roll'] = { "roll": data.last_roll, "text": roll_text };
     } else {
         texts['last_roll'].text.setText("Roll : " + data.last_roll);
     }
-    
+
     if (texts.turn_number == null) {
         console.log("hi brocooliiiii");
-        var turn_num = game.add.text(1100, 250 * 3, "Turn : " + data.turn_number, {font: "24px Arial", fill: "black", align: "center"});
+        var turn_num = game.add.text(1200, 250 * 3, "Turn : " + data.turn_number, {font: "24px Arial", fill: "black", align: "center"});
         texts['turn_number'] = {"text": turn_num};
     } else {
         texts['turn_number'].text.setText("Turn : " + data.turn_number);
