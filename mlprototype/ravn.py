@@ -101,10 +101,21 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
                     moves.append(nodeID + 29)
 
             #build road
-            for (i,(_,edge)) in enumerate(board.edges.items()):
-                v,w = edge.corners
-                if not edge.hasRoad and v in reachable or w in reachable:
-                    moves.append(137 + i)
+            print "Reachable: " + str(Reachable)
+            if myResources["wood"] >= 1 and myResources["brick"] >= 1:
+                for (i,(_,edge)) in enumerate(board.edges.items()):
+                    v,w = edge.corners
+                    if not edge.hasRoad and v in reachable or w in reachable:
+                        moves.append(137 + i)
+
+            #Naval trading
+            base = 336
+            for i, res in enumerate(resourceList):
+                if myResources["res"] >= 4:
+                    for k in range(5):
+                        #see notes.txt
+                        moves.append(base + i*5 + k)
+
 
             moves.append(335)
 
@@ -152,3 +163,4 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
 # 209-262: place free settlement on node k - 209
 # 263-334: place free k-263rd road
 # 335: end turn
+# see notes.txt for more

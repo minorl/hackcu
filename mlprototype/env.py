@@ -9,9 +9,9 @@ class SettleEnv(Environment):
         phaseDict[name] = i
     discreteStates = True
     discreteActions = True
-    inDim = 1
+    inDim = 352
     outDim = 1
-    numActions = 2
+    numActions = 361
     def __init__(self, cv, stateTransfer, actionTransfer):
         super(SettleEnv, self).__init__()
         self.cv = cv
