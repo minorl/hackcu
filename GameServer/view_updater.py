@@ -17,8 +17,14 @@ class ViewUpdater(object):
         port = 31337
         self.s.connect((host,port))
 
-    def sendJSON(self, state):
+    def sendGameState(self, state):
         v = StateVisitor()
+        state.accept(v)
+        package = v.get_json()
+        self.s.send(package)
+
+    def sendTiles(self, state):
+        v = InitialStateVisitor()
         state.accept(v)
         package = v.get_json()
         self.s.send(package)
