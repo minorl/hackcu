@@ -28,7 +28,7 @@ class Controller(object):
             self.roll() #resource/bandit
             self.takeTurn() #actions
             self.nextPlayerTurn()
-            while int(round(time.time() * 1000)) < currTime + 250:
+            while int(round(time.time() * 1000)) < currTime + 1000:
                 pass
         self.end()
 
