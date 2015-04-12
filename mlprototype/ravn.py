@@ -4,6 +4,8 @@ from pybrain.utilities import one_to_n
 
 from scipy import argmax, array, r_, asarray, where
 
+resourceList = ["brick", "wood", "sheep", "wheat", "ore"]
+
 class RestrictedActionValueNetwork(ActionValueNetwork):
     def __init__(self, dimState, numActions, env, name=None):
         super(RestrictedActionValueNetwork, self).__init__(dimState, numActions, name)
@@ -13,7 +15,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
         #valid_moves = get_moves(state)
         #valid_moves = range(self.numActions)
         print "Setting valid moves"
-        valid_moves = RestrictedActionValueNetwork.get_valid_moves()
+        valid_moves = self.get_valid_moves()
         values = array([self.network.activate(r_[state, one_to_n(i, self.numActions)]) if i in valid_moves else np.NINF for i in range(self.numActions)])
         return values
 
@@ -23,28 +25,28 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
         board = state.board
         whoami = state.turn
         if phase == "discard":
-            resourceList = ["brick", "wood", "sheep", "wheat", "ore"]
             resources = state.players[whoami].resources
             return [ k for k in range(5) if  resources[resourceList[k]] > 0]
         elif phase == "buildsettle":
-            valid = validSettleLocations(board)
+            valid = RestrictedActionValueNetwork.validSettleLocations(board)
             return [ k + 209 for k in range(54) if valid[k]]
         elif phase == "buildroad":
             #identify settlement that has no road yet
             found = None
             for v in board.corners:
                 hasRoad = False
-                for e in v.edges:
+                for _,e in v.edges:
                     hasRoad |= e.hasRoad
                 if not hasRoad:
                     found = v
                     break
 
             indices = []
+            edgeList = [e for _,e in board.edges.items()]
             for e in found.edges:
-                indices.append(board.edges.indexOf(e))
+                indices.append(edgeList.indexOf(e))
             indices.sort()
-            return [k + 263 for k in range(len(board.edges))]
+            return [k + 263 for k in indices]
 
         elif phase == "moverobber":
             #get robber location
@@ -58,8 +60,8 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             return [8,9]
         elif phase == "chooseplayer":
             #state.phaseInfo is list of player ints
-            rotated = [(k - whoami)%3 for k in state.phaseInfo]
-            return [k + 5 for k in rotated]
+            rotated = [(k - whoami)%5 for k in state.phaseInfo]
+            return [k + 4 for k in rotated]
         elif phase == "standard":
             moves = []
             myState = state.players[whoami]
@@ -74,7 +76,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             reachable = set([])
             for index in board.corners:
                 if len(reachable) is None or not v in reachable[v.nodeID]:
-                    reachable |= set(RestrictedActionValueNetwork.findLinkedNodes())
+                    reachable |= set(RestrictedActionValueNetwork.getLinkedNodes())
 
             #Locations with a large enough radius to settle at
             validBool = RestrictedActionValueNetwork.validSettleLocations(board)
@@ -91,7 +93,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
                     moves.append(nodeId + 29)
 
             #build road
-            for i,edge in enumerate(board.edges):
+            for (i,(_,edge)) in enumerate(board.edges.items):
                 v,w = edge.corners
                 if not edge.hasRoad and v in reachable or w in reachable:
                     moves.append(137 + i)
@@ -102,7 +104,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
 
         else:
             raise Exception("Unrecognized phase: " + str(phase))
-    
+
     @staticmethod
     def validSettleLocations(board):
         valid = [True for i in range(54)]

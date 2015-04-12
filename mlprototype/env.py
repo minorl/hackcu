@@ -19,7 +19,7 @@ class SettleEnv(Environment):
         self.stateTransfer = stateTransfer
         self.actionTransfer = actionTransfer
         self.state = None
-        self.sensors = zeros(351)
+        self.sensors = zeros(356)
         #Have to bootstrap into the wait/notify cycle
 #        self.cv.acquire()
         #Signal that bootstrapping was successful
