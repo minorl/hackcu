@@ -4,6 +4,9 @@ var app = express();
 //Set up net server for communication between web server and game server
 var net = require('net');
 
+var initial_board;
+var current_state;
+
 var gameServer = net.createServer(function(conn) {
     console.log("Server: Client connected");
 
@@ -11,15 +14,24 @@ var gameServer = net.createServer(function(conn) {
     conn.on("end", function() {
         console.log('Server: Client disconnected');
         // Close the server
-        server.close();
-        // End the process
-        process.exit(0);
     });
 
     // Handle data from client
     conn.on("data", function(data) {
         data = JSON.parse(data);
-        console.log("Response from client: %s", data);
+        if (initial_board == null) {
+            initial_board = data;
+            for (var c in clients) {
+                var remote = clients[c].remote;
+                remote.initBoard(data);
+            }
+        } else {
+            for (var c in clients) {
+                var remote = clients[c].remote;
+                current_state = data;
+                remote.redraw(data);
+            }
+        }
     });
 
     // Let's response with a hello message
@@ -40,7 +52,7 @@ var _ = require('lodash');
 var Eureca = require('eureca.io');
 var clients = {};
 
-var eurecaServer = new Eureca.Server({ allow: ['setId']});
+var eurecaServer = new Eureca.Server({ allow: ['setId', 'redraw', 'initBoard']});
 
 app.use(express.static(__dirname + '/public'));
 
@@ -73,6 +85,12 @@ eurecaServer.onConnect(function (conn) {
     clients[conn.id] = { id: conn.id, remote: remote };
 
     remote.setId(conn.id);
+    if (initial_board != null) {
+        remote.initBoard(initial_board);
+    }
+    if (current_state != null) {
+        remote.redraw(current_state);
+    }
     console.log(clients);
 });
 

@@ -17,6 +17,14 @@ var eurecaClientSetup = function () {
         console.log(myId);
         ready = true;
     }
+
+    eurecaClient.exports.redraw = function(data) {
+        drawPieces(data);
+    }
+
+    eurecaClient.exports.initBoard = function(data) {
+        drawBoard(data);
+    }
 }
 
 var game = new Phaser.Game(1400, 1200, Phaser.AUTO, 'game-container', { preload: preload, create: eurecaClientSetup, update: update, render: render});
@@ -27,6 +35,8 @@ var y_dist = 210;
 var x_offset = 120;
 var total_x_offset = -100;
 var total_y_offset = 25;
+
+var texts = {};
 
 // Variable to store the action after having clicked on an action button
 // -1 => no action, 0 => build road, 1 => build settlement, 2 => build city
@@ -95,9 +105,9 @@ function create() {
     // game.add.tween(sprite).to( {  y: 100}, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
     var circle_y_offset = 207;
 
-    $.getJSON("/data/initial_state.json", function(json) {
-        drawBoard(json); // this will show the info it in firebug console
-    });
+    // $.getJSON("/data/initial_state.json", function(json) {
+    //     drawBoard(json); // this will show the info it in firebug console
+    // });
 
 
 
@@ -158,9 +168,9 @@ function create() {
     console.log(corners);
     drawButtons();
 
-    $.getJSON("/data/examplegamestate.json", function(json) {
-        drawPieces(json); // this will show the info it in firebug console
-    });
+    // $.getJSON("/data/examplegamestate.json", function(json) {
+    //     drawPieces(json); // this will show the info it in firebug console
+    // });
 
     game.input.onDown.add(clicked, this);
 
@@ -262,21 +272,26 @@ function drawPieces(data) {
                 offset = 200;
             }
 
-            var text = game.add.text(1000 + offset, 300 * c, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var player_name = game.add.text(1000 + offset, 350 * c, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            console.log("@@@@@@@@@" + player_state.score);
+            var player_score = game.add.text(1000 + offset + 100, 350 * c, ": " + player_state.score, { font: "24px Arial", fill: players[player_state.id], align: "center" });
             var resources = player_state.resources;
             var brick = resources.brick;
             var sheep = resources.sheep;
             var ore = resources.ore;
             var wheat = resources.wheat;
-            var brick_sprite = game.add.sprite(1000 + offset, 300 * c + 50, "brick_icon");
-            var sheep_sprite = game.add.sprite(1000 + offset, 300 * c + 100, "sheep_icon");
-            var ore_sprite = game.add.sprite(1005 + offset, 300 * c + 160, "ore_icon");
-            var wheat_sprite = game.add.sprite(1005 + offset, 300 * c + 210, "wheat_icon");
+            var wood = resources.wood;
+            var brick_sprite = game.add.sprite(1000 + offset, 350 * c + 50, "brick_icon");
+            var sheep_sprite = game.add.sprite(1000 + offset, 350 * c + 100, "sheep_icon");
+            var ore_sprite = game.add.sprite(1005 + offset, 350 * c + 160, "ore_icon");
+            var wheat_sprite = game.add.sprite(1005 + offset, 350 * c + 210, "wheat_icon");
+            var wood_sprite = game.add.sprite(1005 + offset, 350 * c + 270, "wood_icon");
 
-            var brick_text = game.add.text(1100 + offset, 300 * c + 60, ": " + brick, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-            var sheep_text = game.add.text(1100 + offset, 300 * c + 110, ": " + sheep, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-            var ore_text = game.add.text(1100 + offset, 300 * c + 170, ": " + ore, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-            var wheat_text = game.add.text(1100 + offset, 300 * c + 220, ": " + wheat, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var brick_text = game.add.text(1100 + offset, 350 * c + 60, ": " + brick, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var sheep_text = game.add.text(1100 + offset, 350 * c + 110, ": " + sheep, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var ore_text = game.add.text(1100 + offset, 350 * c + 170, ": " + ore, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var wheat_text = game.add.text(1100 + offset, 350 * c + 220, ": " + wheat, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var wheat_text = game.add.text(1100 + offset, 350 * c + 280, ": " + wood, { font: "24px Arial", fill: players[player_state.id], align: "center" });
             i += 1;
 
 

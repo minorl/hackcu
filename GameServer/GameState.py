@@ -25,6 +25,11 @@ class GameState(object):
         self.players[player].removeResource(resource, amount)
     def countResources(self, player):
         return self.players[player].resourceCount()
+    def getRandomResource(self, player):
+        return self.players[player].randomResource()
+
+    def getSurroundingResources(self, nodeid):
+        return self.board.getSurroundingResources(nodeid)
 
     def addCard(self, player, card):
         self.players[player].addCard(card)
@@ -61,5 +66,8 @@ class GameState(object):
         self.players[player].remBuildings["settlement"] = startingSettlement - s
     def getAdjacentPlayers(self, tile):
         return self.board.getAdjacentPlayers(tile)
+
+    def setRobberTile(self):
+        self.board.setRobber(tile)
     def getRobberTile(self):
         return self.board.getRobber()

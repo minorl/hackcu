@@ -1,5 +1,6 @@
 from GameState import GameState
 from Validator import Validator
+from view_updater import ViewUpdater
 import random
 import logging
 
@@ -10,38 +11,38 @@ class Controller(object):
         self.state = GameState(self.nplayers)
         self.validator = Validator(self.state)
         self.logger = logging.getLogger(__name__)
+        self.update = ViewUpdater()
+
     def play(self):
         self.setup()
         while self.notEnded():
             self.roll() #resource/bandit
             self.takeTurn() #actions
             self.nextPlayerTurn()
-        #Turn has 3 phases:
-        #   Roll:
-        #       If 7:
-        #       If not:
-        #   Action:
-        #       Trade
-        #       Build
-        #       Play
-        #   End
-
 
     def setup(self):
+        # Send initial state for display
+        self.update.sendTiles(self.state)
         #Decide first player randomly
         self.state.turn = random.randrange(0,self.nplayers)
         builtcount = 0
-        while builtcount < self.nplayers * 2:
+        while builtcount < self.nplayers*2:
             self.state.phase = "buildsettle"
             self.updateView()
-            move = self.getValidMove(self.state.turn)
-            self.doMove(move)
+            bs_move = self.getValidMove(self.state.turn)
+            self.doMove(bs_move)
             self.state.phase = "buildroad"
             self.updateView()
             move = self.getValidMove(self.state.turn)
             self.doMove(move)
+            #if this is second settle built do resource init
+            if builtcount >= self.nplayers:
+                for rec in self.state.getSurroundingResources
+                    self.state.addResource(self.state.turn, rec, bs_move.location)
             self.nextPlayerTurn()
             builtcount += 1
+        #initial resource allocation
+
         self.state.phase = 'standard'
 
     def nextPlayerTurn(self):
@@ -56,7 +57,7 @@ class Controller(object):
         self.state.phase = 'standard'
 
     def updateView(self):
-        pass
+        self.update.sendGameState(self.state)
 
     def turnEnded(self):
         return self.state.phase == 'turnended'
@@ -94,8 +95,15 @@ class Controller(object):
         self.state.phase = 'moverobber'
         move = self.getValidMove(self.state.turn)
         self.doMove(move)
+        #list of playerid's next to robber time
         adjplayers = self.state.getAdjacentPlayer(self.state.getRobberTile())
-        if self.turn in adjplayer: adjplayers.remove(self.turn)
+        if self.turn in adjplayer:
+            adjplayers.remove(self.turn)
+        #remove players who have no cards from adjacent list
+        for i in xrange(len(adjplayers) - 1, -1, -1):
+            if self.state.countResources(adjplayers[i]) == 0:
+                del adjplayers[i]
+
         # Davis says to make code concise, use empty list as test for this
         # if statement otherwise he will hit irakli. I like irakli, so this list
         # is now the test for this if statement.
@@ -110,6 +118,7 @@ class Controller(object):
         move = self.players[player].getMove(self.state)
         # loop until valid move receied
         while not self.isValid(move):
+            self.logger.error("INVALID MOVE RECEIVED: Player %d" % player)
             move = self.players[player].getMove(self.state)
         return move
 
