@@ -11,13 +11,19 @@ import json
 
 class ViewUpdater(object):
     def __init__(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.settimeout(None)
         host = 'localhost'
         port = 31337
-        s.connect((host,port))
+        self.s.connect((host,port))
 
     def sendJSON(self, state):
         v = StateVisitor()
         state.accept(v)
         package = v.get_json()
-        s.send(json.dumps(package))  
+        self.s.send(package)
+
+    def reinitialize(self):
+        host = 'localhost'
+        port = 31337
+        self.s.connect((host,port))
