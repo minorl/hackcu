@@ -101,10 +101,12 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
                     moves.append(nodeID + 29)
 
             #build road
-            for (i,(_,edge)) in enumerate(board.edges.items()):
-                v,w = edge.corners
-                if not edge.hasRoad and v in reachable or w in reachable:
-                    moves.append(137 + i)
+            print "Reachable: " + str(Reachable)
+            if myResources["wood"] >= 1 and myResources["brick"] >= 1:
+                for (i,(_,edge)) in enumerate(board.edges.items()):
+                    v,w = edge.corners
+                    if not edge.hasRoad and v in reachable or w in reachable:
+                        moves.append(137 + i)
 
             #Naval trading
             base = 336
