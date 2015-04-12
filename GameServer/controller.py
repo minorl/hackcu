@@ -1,7 +1,7 @@
 from GameState import GameState
 from Validator import Validator
 import random
-
+import logging
 
 class Controller(object):
     def __init__(self, players):
@@ -9,7 +9,7 @@ class Controller(object):
         self.nplayers = len(players)
         self.state = GameState(self.nplayers)
         self.validator = Validator(self.state)
-
+        self.logger = logging.getLogger(__name__)
     def play(self):
         self.setup()
         while self.notEnded():
@@ -90,7 +90,7 @@ class Controller(object):
             self.updateView()
         self.state.phase = 'standard'
 
-    def moveRobber():
+    def moveRobber(self):
         self.state.phase = 'moverobber'
         move = self.getValidMove(self.state.turn)
         self.doMove(move)
@@ -102,7 +102,8 @@ class Controller(object):
         if adjplayer:
             self.state.phaseinfo = adjplayer
             self.state.phase = 'chooseplayer'
-
+            move = self.getValidMove()
+            self.doMove(move)
 
     def getValidMove(self, player):
         self.updateView()
@@ -114,3 +115,64 @@ class Controller(object):
 
     def isValid(self, move):
         return self.validator.validateMove(move)
+
+    def doMove(self, move):
+        if move.typ == 'build':
+            if move.structure == 'road':
+                # 1 brick, 1 wood
+                self.state.addRoad(move.playerid, move.location[0], move.location[1])
+                self.removeResource(move.playerid, 'brick', 1)
+                self.removeResource(move.playerid, 'wood', 1)
+            else:
+                if move.structure == 'settlement':
+                    # 1 brick, 1 wood, 1 wheat, 1 sheep settlement
+                    self.state.removeResource(move.playerid, 'wood', 1)
+                    self.state.removeResource(move.playerid, 'wheat', 1)
+                    self.state.removeResource(move.playerid, 'brick', 1)
+                    self.state.removeResource(move.playerid, 'sheep', 1)
+                elif move.structure == 'city':
+                    # 2 wheat, 3 ore city
+                    self.state.removeResource(move.playerid, 'wheat', 2)
+                    self.state.removeResource(move.playerid 'ore', 3)
+                else:
+                    self.logger.error("Unrecognized build type %s" % move.structure)
+                self.state.addBuilding(move.playerid, move.structure, move.location)
+            # check to see if building changed longest road count
+            l = self.state.getLongestRoads()
+            currentlongest = 0
+            if self.longestroad is not None:
+                currentlongest = l[self.longestroad]
+            newlongestid = None
+            for i in xrange(0, self.nplayers):
+                if l[i] > currentlongest:
+                    newlongestid = i
+                    currentlongest = l[i]
+            #need to check if road breaking resulted in a tie
+            if newlongestid != self.longestroad:
+                if l.count(currentlongest) != 1:
+                    self.longestroad = None
+                else:
+                    self.longestroad = newlongestid
+            # update remaining building count
+            self.state.updateRemaining(move.playerid)
+            self.updateView()
+        elif mov.typ == 'trade':
+            self.logger.error("TRADE MOVE NOT SUPPORTED")
+        elif mov.typ == 'robber':
+            #set robber tile
+            self.state.setRobberTile(move.location)
+        elif mov.typ == 'takecard':
+            # Remove card from target, add to initiator
+            rectoremove = self.state.getRandomResource()
+            self.state.removeResource(move.target, rectoremove, 1)
+            self.state.addResource(move.playerid, rectoremove, 1)
+            self.updateView()
+        elif mov.typ == 'playcard':
+            #yell when things are important
+            self.logger.error("PLAY CARD MOVE NOT SUPPORTED")
+        elif mov.typ == 'discard':
+            # Need to add ability to discard more than one at a time
+            self.state.removeResource(move.playerid, move.card)
+        elif mov.typ == 'endturn':
+            self.state.phase = 'endturn'
+

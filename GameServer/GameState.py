@@ -46,7 +46,9 @@ class GameState(object):
         self.board.addBuilding(corner, player, building)
     def addRoad(self, player, corner1, corner2):
         self.board.addRoad(corner1,corner2,player)
-
+    def getLongestRoads(self):
+        return self.board.getLongestRoad()
+    # This could be too slow!! Called when things are built
     def updateRemaining(self, player):
         c = self.board.getCount(player, 'city')
         startingCities = self.players[player].startingBuildings["city"]
