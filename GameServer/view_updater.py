@@ -21,14 +21,13 @@ class ViewUpdater(object):
         v = StateVisitor()
         state.accept(v)
         package = v.get_json()
-        print package
         self.s.send(package)
 
     def sendTiles(self, state):
         v = InitialStateVisitor()
         state.accept(v)
         package = v.get_json()
-        yyself.s.send(package)
+        self.s.send(package)
 
     def reinitialize(self):
         host = 'localhost'
