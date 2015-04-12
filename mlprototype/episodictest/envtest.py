@@ -8,7 +8,7 @@ class TestEnv(Environment):
     discreteStates = True
     discreteActions = True
     inDim = 1
-    outDim =1000
+    outDim =200
     numActions = 3
     def __init__(self):
         super(TestEnv, self).__init__()
@@ -19,7 +19,7 @@ class TestEnv(Environment):
 
     def build_curr(self):
         self.curr = []
-        for i in range(1000):
+        for i in range(200):
             self.curr.append(1 if random.random() > 0.5 else -1)
 
     def getSensors(self):
