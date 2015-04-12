@@ -1,5 +1,6 @@
 from GameState import GameState
 from Validator import Validator
+from view_updater import ViewUpdater
 import random
 import logging
 
@@ -10,22 +11,14 @@ class Controller(object):
         self.state = GameState(self.nplayers)
         self.validator = Validator(self.state)
         self.logger = logging.getLogger(__name__)
+        self.update = ViewUpdater()
+
     def play(self):
         self.setup()
         while self.notEnded():
             self.roll() #resource/bandit
             self.takeTurn() #actions
             self.nextPlayerTurn()
-        #Turn has 3 phases:
-        #   Roll:
-        #       If 7:
-        #       If not:
-        #   Action:
-        #       Trade
-        #       Build
-        #       Play
-        #   End
-
 
     def setup(self):
         #Decide first player randomly
