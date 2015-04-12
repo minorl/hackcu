@@ -19,7 +19,7 @@ class Controller(object):
             self.update = updater
 
         self.delay = 1
-        self.stalematecond = 50
+        self.stalematecond = 500
     def play(self):
         self.setup()
         while not self.gameEnded():
