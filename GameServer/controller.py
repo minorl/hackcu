@@ -158,7 +158,9 @@ class Controller(object):
                     currentlongest = l[i]
             #need to check if road breaking resulted in a tie
             if newlongestid != self.longestroad:
-                if l.count(currentlongest) != 1:
+                if currentlongest<5:
+                    self.longestroad = None
+                elif l.count(currentlongest) != 1:
                     self.longestroad = None
                 else:
                     self.longestroad = newlongestid
