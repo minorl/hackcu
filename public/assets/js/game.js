@@ -73,6 +73,8 @@ var tiles = [] //size should be 19
 var corners = [] //size should be 54
 var corners_size = 54;
 
+var pieces_drawn = {};
+
 // Y-offsets for circle corners
 var even_offsets = [0.25, 0.75, 1.75, 2.25, 3.25, 3.75];
 var odd_offsets = [0, 1, 1.5, 2.5, 3, 4];
@@ -258,23 +260,49 @@ function drawCorner(x, y, r) {
     bmd.ctx.fill();
 }
 
-function drawPiece(x, y, piece_name) {
+function drawPiece(x, y, piece_name, id) {
     //console.log(piece_name);
-    var scale = 1;
-    if (piece_name.indexOf('settlement') >= 0) {
-        x -= 25;
-        y -= 25;
-        scale = 0.75;
-    } else if (piece_name.indexOf('city') >= 0) {
-        x -= 25;
-        y -= 25;
-        scale = 0.85;
-    }
-    // var sprite = new Phaser.Sprite(game, x, y, piece_name);
+    if (pieces_drawn[id] == null) {
+        var scale = 1;
+        var type = '';
+        if (piece_name.indexOf('settlement') >= 0) {
+            type = 'settlement';
+            x -= 25;
+            y -= 25;
+            scale = 0.75;
+        } else if (piece_name.indexOf('city') >= 0) {
+            type = 'city';
+            x -= 25;
+            y -= 25;
+            scale = 0.85;
+        }
+        // var sprite = new Phaser.Sprite(game, x, y, piece_name);
 
-    var sprite = game.add.sprite(x, y, piece_name);
-    sprite.scale.x = 0.75;
-    sprite.scale.y = scale;
+        var sprite = game.add.sprite(x, y, piece_name);
+        pieces_drawn[id] = { "type": type, "sprite" : sprite };
+        sprite.scale.x = 0.75;
+        sprite.scale.y = scale;
+    } else {
+        var scale = 1;
+        var type = '';
+        if (piece_name.indexOf('settlement') >= 0) {
+            type = 'settlement';
+            x -= 25;
+            y -= 25;
+            scale = 0.75;
+        } else if (piece_name.indexOf('city') >= 0) {
+            type = 'city';
+            x -= 25;
+            y -= 25;
+            scale = 0.85;
+        }
+        // var sprite = new Phaser.Sprite(game, x, y, piece_name);
+        pieces_drawn[id].sprite.kill();
+        var sprite = game.add.sprite(x, y, piece_name);
+        pieces_drawn[id] = { "type": type, "sprite" : sprite };
+        sprite.scale.x = 0.75;
+        sprite.scale.y = scale;
+    }
 }
 
 function drawPieces(data) {
@@ -283,7 +311,7 @@ function drawPieces(data) {
             //console.log(corner_state);
             var id = corner_state.id;
             var c = corners[id];
-            drawPiece(c.x, c.y, corner_state.building_tag + '_' + players[corner_state.player_id]);
+            drawPiece(c.x, c.y, corner_state.building_tag + '_' + players[corner_state.player_id], id);
         }
     });
 
