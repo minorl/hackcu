@@ -26,6 +26,10 @@ var eurecaClientSetup = function () {
     eurecaClient.exports.initBoard = function(data) {
         drawBoard(data);
     }
+
+    eurecaClient.exports.restart = function(data) {
+        location.reload();
+    }
 }
 
 var game = new Phaser.Game(1400, 1200, Phaser.AUTO, 'game-container', { preload: preload, create: eurecaClientSetup, update: update, render: render});
@@ -403,8 +407,12 @@ function render () {
 
 function onDown(sprite, pointer) {
     if (sprite.key == "settlement") {
-        //console.log("Build settlement");
+        console.log("Build settlement");
         action = 1;
     }
-    //console.log("You clicked me!");
+    console.log("You clicked me!");
+    $('canvas').remove();
+    // game = new Phaser.Game(1400, 1200, Phaser.AUTO, 'game-container', { preload: preload, create: eurecaClientSetup, update: update, render: render});
+    location.reload();
+
 }
