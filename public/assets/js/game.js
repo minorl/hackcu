@@ -252,22 +252,31 @@ function drawPieces(data) {
 
     var i = 0;
     data.player_states.forEach(function (player_state) {
+        var c = i;
         if (player_state != null) {
-            var text = game.add.text(1000, 300 * i, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var offset = 0;
+            if (i < 2) {
+                offset = 0;
+            } else {
+                c -= 2;
+                offset = 200;
+            }
+
+            var text = game.add.text(1000 + offset, 300 * c, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
             var resources = player_state.resources;
             var brick = resources.brick;
             var sheep = resources.sheep;
             var ore = resources.ore;
             var wheat = resources.wheat;
-            var brick_sprite = game.add.sprite(1000, 300 * i + 50, "brick_icon");
-            var sheep_sprite = game.add.sprite(1000, 300 * i + 100, "sheep_icon");
-            var ore_sprite = game.add.sprite(1005, 300 * i + 160, "ore_icon");
-            var wheat_sprite = game.add.sprite(1005, 300 * i + 210, "wheat_icon");
+            var brick_sprite = game.add.sprite(1000 + offset, 300 * c + 50, "brick_icon");
+            var sheep_sprite = game.add.sprite(1000 + offset, 300 * c + 100, "sheep_icon");
+            var ore_sprite = game.add.sprite(1005 + offset, 300 * c + 160, "ore_icon");
+            var wheat_sprite = game.add.sprite(1005 + offset, 300 * c + 210, "wheat_icon");
 
-            var brick_text = game.add.text(1100, 300 * i + 60, ": " + brick, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-            var sheep_text = game.add.text(1100, 300 * i + 110, ": " + sheep, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-            var ore_text = game.add.text(1100, 300 * i + 170, ": " + ore, { font: "24px Arial", fill: players[player_state.id], align: "center" });
-            var wheat_text = game.add.text(1100, 300 * i + 220, ": " + wheat, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var brick_text = game.add.text(1100 + offset, 300 * c + 60, ": " + brick, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var sheep_text = game.add.text(1100 + offset, 300 * c + 110, ": " + sheep, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var ore_text = game.add.text(1100 + offset, 300 * c + 170, ": " + ore, { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var wheat_text = game.add.text(1100 + offset, 300 * c + 220, ": " + wheat, { font: "24px Arial", fill: players[player_state.id], align: "center" });
             i += 1;
 
 
