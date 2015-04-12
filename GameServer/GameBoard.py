@@ -97,6 +97,16 @@ class GameBoard(object):
                 return True
         return False
 
+    def getBuildings(self,dieRoll):
+        settlements=[]
+        # location = self.harvestNumber[dieRoll]
+        for t in self.tiles.itervalues():
+            if t.number == dieRoll:
+                for cornerID in self.tileTbl[t.tileID]:
+                    corner = self.corners[cornerID]
+                    if corner.buildingPlayerID!=None:
+                        settlements.append((t.resource, corner.buildingPlayerID,corner.buildingTag))
+        return settlements
 
     def getCount(self,playerID,buildingTag):
         return self.buildingCounts[buildingTag][playerID]
@@ -125,8 +135,6 @@ class GameBoard(object):
                 if curDist >playerRoads[i]:
                     playerRoads[i]=curDist
         print playerRoads
-
-
             
                 #print road
     def recurseRoad(self,c,dist, visitedCorners, playerID):
