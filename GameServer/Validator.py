@@ -4,7 +4,7 @@ class Validator(object):
     def __init__(self,gameState):
         self.gameState = gameState
     def validateMove(self,move):
-        print move.typ, self.gameState.phase
+        #print move.typ, self.gameState.phase
         #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard
         if move.typ=="build" and (self.gameState.phase== 'buildsettle' or self.gameState.phase== 'buildroad'):
             if move.structure == 'city':
