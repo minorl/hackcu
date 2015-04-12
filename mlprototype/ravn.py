@@ -105,6 +105,15 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
                 if not edge.hasRoad and v in reachable or w in reachable:
                     moves.append(137 + i)
 
+            #Naval trading
+            base = 336
+            for i, res in enumerate(resourceList):
+                if myResources["res"] >= 4:
+                    for k in range(5):
+                        #see notes.txt
+                        moves.append(base + i*5 + k)
+
+
             moves.append(335)
 
         else:
