@@ -8,24 +8,19 @@ from pybrain.rl.experiments.episodic import EpisodicExperiment
 from pybrain.rl.environments import Task
 from tasktest import TestTask
 from envtest import TestEnv
-from mlprototype.hackedexplorer import EpsilonHackedExplorer
 
 env = TestEnv()
 task = TestTask(env)
 
-controller = ActionValueNetwork(1000, 3)
+controller = ActionValueNetwork(200, 3)
 learner = NFQ()
-learner = EpsilonHackedExplorer(env)
-print "Explorer: " + str(learner.explorer)
 agent = LearningAgent(controller, learner)
-print "Explorer: " + str(learner.explorer)
 
 experiment = EpisodicExperiment(task, agent)
-print "Explorer: " + str(learner.explorer)
 
 i = 0
 while True:
-    experiment.doEpisodes(1)
+    experiment.doEpisodes(10)
     print "Learning"
     agent.learn()
     agent.reset()

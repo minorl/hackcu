@@ -19,7 +19,7 @@ class GameState(object):
         for p in self.players:
             p.accept(v)
         self.board.accept(v)
-    def maxPlayerScore():
+    def maxPlayerScore(self):
         return max([player.score for player in self.players])
     def addResource(self, player, resource, amount):
         self.players[player].addResource(resource, amount)

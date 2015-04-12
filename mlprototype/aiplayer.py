@@ -73,6 +73,13 @@ class AIPlayer(Player):
             move = Move(whoami, 'build', {'location' : action - 209, 'structure' : 'settlement'})
         elif action == 335:
             move = Move(whoami, 'endturn')
+        #naval trading
+        elif action in range(336, 361):
+            shifted = action - 336
+            offer = resourceList[shifted/5]
+            want = resourceList[shifted %5]
+            print "Player %d trading %s for %s" % (whoami, offer, want)
+            move = Move(whoami, 'navaltrade', {'offer': offer, 'want': want})
         else:
             raise Exception("Unrecognized action: %d" % action)
 
@@ -84,7 +91,7 @@ class AIPlayer(Player):
         #dimensionality of state argument (could be less than stateTransfer)
         stateDim = 352
         #Number of moves possible
-        numMoves = 356
+        numMoves = 361
         env = SettleEnv(cv, stateTransfer, actionTransfer)
         task = SettleTask(env)
         controller = RestrictedActionValueNetwork(stateDim, numMoves, env)
@@ -94,6 +101,7 @@ class AIPlayer(Player):
         experiment = EpisodicExperiment(task, agent)
         while True:
             experiment.doEpisodes(100)
+            print "Done with experiments"
             agent.learn()
             agent.reset()
             print "Cycled"
