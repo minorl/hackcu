@@ -83,6 +83,7 @@ class Validator(object):
         if buildingTag == "road":
             road = self.gameState.board.getEdge(location[0],location[1])
             if road.hasRoad:
+                print "road present"
                 return False
             hasConnection = False
             if road.corners[0].buildingPlayerID == playerID:
@@ -93,4 +94,5 @@ class Validator(object):
                 return True
             if road.corners[1].buildingTag == None and self.gameState.board.hasColorRoad(road.corners[1].nodeID,playerID):
                 return True
+            print "road fails"
             return False
