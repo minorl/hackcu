@@ -29,7 +29,6 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
         if phase == "ended":
             moves = [0]
         elif phase == "discard":
-            print "Discarding"
             resources = state.players[whoami].resources
             moves = [ k for k in range(5) if  resources[resourceList[k]] > 0]
         elif phase == "buildsettle":
@@ -55,7 +54,6 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             moves = [k + 263 for k in indices]
 
         elif phase == "moverobber":
-            print "Moving robber"
             #get robber location
             moves = []
             for i in range(0,19):
@@ -65,7 +63,6 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             raise Exception("naw fuck that")
             moves = [8,9]
         elif phase == "chooseplayer":
-            print "Choosing player"
             #state.phaseInfo is list of player ints
             rotated = [(k - whoami)%4 for k in state.phaseinfo]
             moves = [k + 4 for k in rotated]
@@ -97,6 +94,7 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
 
             #build settlement
             if myResources["wood"] >= 1 and myResources["sheep"] >= 1 and myResources["brick"] >= 1 and myResources["wheat"] >= 1:
+                print "%d can afford settlement" % whoami
                 for nodeID in valid & reachable:
                     print "%d can build settlement at %d" %(whoami, nodeID)
                     moves.append(nodeID + 29)
@@ -150,7 +148,8 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
                     w = wCorner.nodeID
                     if not visited[w]:
                         visited[w] = True
-                        Q.insert(0,w)
+                        if wCorner.buildingPlayerID == playerID:
+                            Q.insert(0,w)
         result =  [k for k in range(54) if visited[k]]
         return result
 
