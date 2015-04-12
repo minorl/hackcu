@@ -4,22 +4,35 @@ from view_updater import ViewUpdater
 import random
 import logging
 from time import sleep
+import copy
 
 class Controller(object):
-    def __init__(self, players):
+    def __init__(self, players, updater=None):
         self.players = players
         self.nplayers = len(players)
         self.state = GameState(self.nplayers)
         self.validator = Validator(self.state)
         self.logger = logging.getLogger(__name__)
-        self.update = ViewUpdater()
+        if updater not None:
+            self.update = ViewUpdater()
+        else:
+            self.update = updater
+
         self.delay = 1
+
     def play(self):
         self.setup()
-        while not self.turnEnded():
+        while not self.gameEnded():
             self.roll() #resource/bandit
             self.takeTurn() #actions
             self.nextPlayerTurn()
+        self.end()
+
+    def end(self):
+        #tell everyone the game is over
+        for player in players:
+            player.getMove(self.state)
+        self.updateView()
 
     def setup(self):
         # Send initial state for display
@@ -27,7 +40,14 @@ class Controller(object):
         #Decide first player randomly
         self.state.turn = random.randrange(0,self.nplayers)
         builtcount = 0
-        while builtcount < self.nplayers*2:
+        turnorder = []
+        for i in range(0, self.nplayers):
+            turnorder.append((self.state.turn + i) % self.nplayers)
+        turnorderbckwd = copy.deepcopy(turnorder)
+        turnorderbckwd.reverse()
+        turnorder += turnorderbckwd
+
+        for i in range(0, self.nplayers*2):
             self.state.phase = "buildsettle"
             self.updateView()
             bs_move = self.getValidMove(self.state.turn)
@@ -41,8 +61,8 @@ class Controller(object):
                 for rec in self.state.getSurroundingResources(bs_move.location):
                     if rec != 'desert':
                         self.state.addResource(self.state.turn, rec, 1)
-            self.nextPlayerTurn()
-            builtcount += 1
+
+            self.state.turn = (i + self.nplayers*2) % (self.nplayers*2)
         #initial resource allocation
 
         self.state.phase = 'standard'
@@ -61,6 +81,19 @@ class Controller(object):
 
     def updateView(self):
         self.update.sendGameState(self.state)
+
+    def gameEnded(self):
+        if self.state.maxPlayerScore() >= 10:
+            self.state.phase = 'ended'
+            self.state.phaseinfo = 'won'
+            return True
+        elif self.state.numturns >= 500:
+            self.state.phase = 'ended'
+            self.state.phaseinfo = 'stalemate'
+            return True
+        else:
+            return False
+
 
     def turnEnded(self):
         return self.state.phase == 'endturn'

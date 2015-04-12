@@ -12,13 +12,15 @@ class GameState(object):
         self.phase = None
         self.phaseinfo = None
         self.lastroll = None #int - Roll value
+        self.numturns = 0
 
     def accept(self, v):
         v.visit(self)
         for p in self.players:
             p.accept(v)
         self.board.accept(v)
-
+    def maxPlayerScore():
+        return max([player.score for player in self.players])
     def addResource(self, player, resource, amount):
         self.players[player].addResource(resource, amount)
     def removeResource(self, player, resource, amount):
