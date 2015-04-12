@@ -157,7 +157,7 @@ class Controller(object):
         # loop until valid move receied
         while not self.isValid(move):
             sleep(self.delay)
-            self.logger.error("INVALID MOVE RECEIVED: Player %d, Move: %s" % (player,str(move)))
+            self.logger.error("INVALID MOVE RECEIVED: Player %d, Move: %s, Phase %s" % (player,str(move), self.state.phase))
             move = self.players[player].getMove(self.state)
         return move
 
