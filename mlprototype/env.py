@@ -126,7 +126,7 @@ class SettleEnv(Environment):
     def performAction(self, action):
         #choose move
         print "Applying action"
-        self.actionTransfer[0] = 3
+        self.actionTransfer[0] = action[0]
         self.cv.notify()
         self.cv.wait()
         self.cv.acquire()

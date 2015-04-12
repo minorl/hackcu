@@ -3,7 +3,10 @@ from Validator import *
 from GameState import *
 from Move import *
 
+updater = ViewUpdater()
 gs = GameState(4)
+updater.sendTiles(gs)
+
 board = gs.board
 board.addRoad(4,12,0)
 corner1 = board.corners[12]
@@ -50,8 +53,8 @@ move2 = Move(1,'build',{'structure':'city', 'location':34})
 print check.validateMove(move1)
 print check.validateMove(move2)
 
-updater = ViewUpdater()
-print updater.sendJSON(gs)
+
+updater.sendGameState(gs)
 
 #print gs.board.setRobber('A')
 #print len(board.edges)
