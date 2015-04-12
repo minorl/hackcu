@@ -46,8 +46,10 @@ class Controller(object):
         turnorderbckwd = copy.deepcopy(turnorder)
         turnorderbckwd.reverse()
         turnorder += turnorderbckwd
+        print "Turnorder: %s" %(str(turnorder))
 
         for i in range(0, self.nplayers*2):
+            self.state.turn = turnorder[i] 
             self.state.phase = "buildsettle"
             self.updateView()
             bs_move = self.getValidMove(self.state.turn)
@@ -62,7 +64,6 @@ class Controller(object):
                     if rec != 'desert':
                         self.state.addResource(self.state.turn, rec, 1)
 
-            self.state.turn = (i + self.nplayers*2) % (self.nplayers*2)
         #initial resource allocation
 
         self.state.phase = 'standard'
