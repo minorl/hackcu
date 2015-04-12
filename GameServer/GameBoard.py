@@ -109,7 +109,7 @@ class GameBoard(object):
                     if corner.buildingPlayerID!=None:
                         settlements.append((t.resource, corner.buildingPlayerID,corner.buildingTag))
         return settlements
-    def getAdjPlayers(self, tileID):
+    def getAdjacentPlayers(self, tileID):
         neighbors = []
         for cornerID in self.tileTbl[tileID]:
             corner = self.corners[cornerID]
@@ -192,7 +192,7 @@ class Corner(object):
         if len(self.tiles)>3:
             del self.tiles[0]
     def getSurroundingResources(self):
-        return [t.resource for t in tiles]
+        return [t.resource for t in self.tiles]
 
     def addBuilding(self,playerID, buildingTag):
         self.buildingTag=buildingTag
