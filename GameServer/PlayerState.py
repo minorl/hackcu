@@ -21,7 +21,7 @@ class PlayerState(object):
         self.cards[card] -= 1
     def getRandomResource(self):
         reclist = []
-        for (rec, n) in self.resourceCount:
+        for (rec, n) in self.resources.items():
             reclist += [rec]*n
         return random.sample(reclist, 1)[0]
     def resourceCount(self):

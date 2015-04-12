@@ -104,6 +104,10 @@ print check.validateMove(move2)
 updater.sendGameState(gs)
 time.sleep(1)
 
+gs.phase = 'ended'
+updater.sendGameState(gs)
+time.sleep(1)
+
 
 
 

@@ -21,6 +21,9 @@ class Validator(object):
         elif move.typ=="development" and self.gameState.phase== 'standard':
             playerResources = self.gameState.players[move.playerid].resources
             return playerResources['sheep']>=1 and playerResources['wheat']>=1 and playerResources['ore']>=1
+        elif move.typ == "navaltrade" and self.gameState.phase == 'standard':
+            return self.gameState.players[move.playerid].resources[move.offer] >=4
+
         elif move.typ == "robber" and self.gameState.phase == 'moverobber':
             return move.location != self.gameState.board.robberPos
         elif move.typ == "takecard" and self.gameState.phase == 'chooseplayer':

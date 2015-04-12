@@ -39,6 +39,10 @@ var total_y_offset = 25;
 
 var texts = {};
 
+var curr_robber;
+
+var tile_node_lookup = {};
+
 // Variable to store the action after having clicked on an action button
 // -1 => no action, 0 => build road, 1 => build settlement, 2 => build city
 var action = -1;
@@ -228,9 +232,14 @@ function drawTile(x, y, tile_node) {
         dieLayer.add(robber);
         robber.scale.x = 0.5;
         robber.scale.y = 0.5;
+
+        curr_robber = { "robber": robber, "id": tile_node.id };
     }
 
     tiles.push(sprite);
+    var index = tiles.length;
+
+    tile_node_lookup[tile_node.id] = { "index": index, "x": x + 45, "y": y + 60};
     tileLayer.add(sprite);
     sprite.scale.x = 0.75;
     sprite.scale.y = 0.75;
@@ -284,6 +293,19 @@ function drawPieces(data) {
             drawRoad(x1, y1, x2, y2, players[edge_state.player_id]);
         }
     });
+
+    if (data.robber != curr_robber.id) {
+        curr_robber.robber.kill();
+        var robber_info = tile_node_lookup[data.robber];
+        x = robber_info.x;
+        y = robber_info.y;
+        var robber = new Phaser.Sprite(game, x, y, "robber");
+        robber.scale.x = 0.5;
+        robber.scale.y = 0.5;
+        dieLayer.add(robber);
+
+        curr_robber = { "robber": robber, "id": data.robber };
+    }
 
     var i = 0;
     data.player_states.forEach(function (player_state) {

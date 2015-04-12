@@ -56,6 +56,7 @@ class Controller(object):
             self.updateView()
             move = self.getValidMove(self.state.turn)
             self.doMove(move)
+            self.state.updateAllScores()
         self.state.phase = 'standard'
 
     def updateView(self):

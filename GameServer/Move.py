@@ -10,6 +10,9 @@ class Move(object):
             self.target = optiond['target']
             self.offer = optiond['offer']
             self.want = optiond['want']
+        elif typ == 'navaltrade':
+            self.offer = optiond['offer']
+            self.want = optiond['want']
         elif typ == 'robber':
             self.location = optiond['location']
         elif typ == 'takecard':
