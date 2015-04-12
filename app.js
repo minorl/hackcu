@@ -19,17 +19,27 @@ var gameServer = net.createServer(function(conn) {
     // Handle data from client
     conn.on("data", function(data) {
         data = JSON.parse(data);
-        if (initial_board == null) {
-            initial_board = data;
+        console.log(data.phase);
+        if (data.phase == "ended") {
             for (var c in clients) {
                 var remote = clients[c].remote;
-                remote.initBoard(data);
+                initial_board = null;
+                current_state = null;
+                remote.restart();
             }
         } else {
-            for (var c in clients) {
-                var remote = clients[c].remote;
-                current_state = data;
-                remote.redraw(data);
+            if (initial_board == null) {
+                initial_board = data;
+                for (var c in clients) {
+                    var remote = clients[c].remote;
+                    remote.initBoard(data);
+                }
+            } else {
+                for (var c in clients) {
+                    var remote = clients[c].remote;
+                    current_state = data;
+                    remote.redraw(data);
+                }
             }
         }
         writeAck();
@@ -63,7 +73,7 @@ var _ = require('lodash');
 var Eureca = require('eureca.io');
 var clients = {};
 
-var eurecaServer = new Eureca.Server({ allow: ['setId', 'redraw', 'initBoard']});
+var eurecaServer = new Eureca.Server({ allow: ['setId', 'redraw', 'initBoard', 'restart']});
 
 app.use(express.static(__dirname + '/public'));
 

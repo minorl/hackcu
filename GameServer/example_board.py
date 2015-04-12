@@ -6,6 +6,7 @@ import time
 
 updater = ViewUpdater()
 gs = GameState(4)
+gs.phase = "standard"
 updater.sendTiles(gs)
 
 board = gs.board
