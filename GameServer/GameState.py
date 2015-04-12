@@ -38,6 +38,9 @@ class GameState(object):
 
     def getBuildings(self, dieroll):
         return self.board.getBuildings(dieroll)
+    def updateAllScores(self):
+        for i in xrange(0,len(self.players)):
+            self.updateScore(i)
 
     def updateScore(self, player):
         c = self.board.getCount(player, 'city')

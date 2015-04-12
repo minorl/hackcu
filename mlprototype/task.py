@@ -12,4 +12,7 @@ class SettleTask(EpisodicTask):
 
     def getReward(self):
         state = self.env.state
-        return ((state.players[state.turn].score)**2) + 100 * (state.phase == "ended")
+        score = ((state.players[state.turn].score)**2)
+        if state.phase == "ended" and state.phaseInfo == "stalemate":
+            score = score **0.5
+        return score

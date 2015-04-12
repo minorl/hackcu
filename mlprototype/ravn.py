@@ -92,7 +92,8 @@ class RestrictedActionValueNetwork(ActionValueNetwork):
             #Check for city upgrades
             if myResources["ore"] >= 3 and myResources["wheat"] >= 2:
                 for v in mySettles:
-                    moves.append(83 + v.nodeID)
+                    if v.buildingTag != "city":
+                        moves.append(83 + v.nodeID)
 
             #build settlement
             if myResources["wood"] >= 1 and myResources["sheep"] >= 1 and myResources["brick"] >= 1 and myResources["wheat"] >= 1:
