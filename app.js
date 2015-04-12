@@ -35,11 +35,11 @@ var gameServer = net.createServer(function(conn) {
     });
 
     // Let's response with a hello message
-    conn.write(
-        JSON.stringify(
-            { response: "Hey there client!" }
-        )
-    );
+//    conn.write(
+//        JSON.stringify(
+//            { response: "Hey there client!" }
+//        )
+//    );
 });
 
 // Listen for connections
