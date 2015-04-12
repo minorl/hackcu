@@ -36,8 +36,8 @@ class AIPlayer(Player):
         whoami = state.turn
         #Discard
         action = int(action)
-        if i in range(0,5):
-            move = Move(whoami, 'discard', {'card':resourceList[i]})
+        if action in range(0,5):
+            move = Move(whoami, 'discard', {'card':resourceList[action]})
         #Choose player
         elif action in range(5, 8):
             target = ((action - 4) + whoami) % 4
