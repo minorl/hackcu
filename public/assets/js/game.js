@@ -51,6 +51,8 @@ var cornerLayer;
 // Group for pieces
 var pieceLayer;
 
+var dieLayer;
+
 // Lookup for player id and the color
 var players = { '0': 'blue', '1': 'green', '2': 'orange', '3': 'red' }
 
@@ -76,6 +78,11 @@ function preload() {
     icons.forEach(function (icon) {
         game.load.image(icon + "_icon", 'assets/img/' + icon + '_icon.png');
     });
+    for (var i = 2; i <= 12; i++) {
+        if (i != 7)
+            game.load.image("number_" + i, 'assets/img/' + 'number_' + i + '.png');
+    }
+    game.load.image("robber", 'assets/img/robber.png');
 }
 
 function create() {
@@ -84,10 +91,12 @@ function create() {
     tileLayer = game.add.group();
     cornerLayer = game.add.group();
     pieceLayer = game.add.group();
+    dieLayer = game.add.group();
 
     tileLayer.z = 0;
     cornerLayer.z = 1;
     pieceLayer.z = 2;
+    dieLayer.z = 3;
 
     // Set distances and offsets due to sprite scaling
     x_dist *= 0.75;
@@ -204,9 +213,24 @@ function drawButtons() {
 function drawTile(x, y, tile_node) {
     // var spriteNumber = Math.floor((Math.random() * 7));
     var sprite = new Phaser.Sprite(game, x, y, tile_node.resource.toLowerCase());
-    // var tile = game.add.sprite(x, y, sprites[spriteNumber]);
+    if (tile_node.resource.toLowerCase() != "desert") {
+        var die = new Phaser.Sprite(game, x + 45, y + 60, "number_" + tile_node.dienum);
+        // var tile = game.add.sprite(x, y, sprites[spriteNumber]);
+
+        dieLayer.add(die);
+
+        die.scale.x = 0.5;
+        die.scale.y = 0.5;
+    } else {
+        var robber = new Phaser.Sprite(game, x + 45, y + 60, "robber");
+
+        dieLayer.add(robber);
+        robber.scale.x = 0.5;
+        robber.scale.y = 0.5;
+    }
+
+    tiles.push(sprite);
     tileLayer.add(sprite);
-    tiles.push(sprite)
     sprite.scale.x = 0.75;
     sprite.scale.y = 0.75;
 }
@@ -298,7 +322,8 @@ function drawPieces(data) {
                                                 "sheep": sheep_text,
                                                 "ore": ore_text,
                                                 "wheat": wheat_text,
-                                                "wood": wood_text
+                                                "wood": wood_text,
+                                                "score": player_score
                                             };
                 i += 1;
             } else {
@@ -307,6 +332,7 @@ function drawPieces(data) {
                 texts[players[player_state.id]]["ore"].setText(": " + ore);
                 texts[players[player_state.id]]["wheat"].setText(": " + wheat);
                 texts[players[player_state.id]]["wood"].setText(": " + wood);
+                texts[players[player_state.id]]["score"].setText(": " + player_state.score);
             }
 
 
