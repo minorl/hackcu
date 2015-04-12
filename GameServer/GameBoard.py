@@ -1,6 +1,7 @@
 from random import shuffle
 import copy
 
+
 class GameBoard(object):
     def __init__(self):
         self.corners = []
@@ -107,6 +108,14 @@ class GameBoard(object):
                     if corner.buildingPlayerID!=None:
                         settlements.append((t.resource, corner.buildingPlayerID,corner.buildingTag))
         return settlements
+    def getAdjPlayers(self, tileID):
+        neighbors = []
+        for cornerID in self.tileTbl[tileID]:
+            corner = self.corners[cornerID]
+            if corner.buildingPlayerID!=None and corner.buildingPlayerID not in neighbors:
+                neighbors.append(corner.buildingPlayerID)
+        return neighbors
+
 
     def getCount(self,playerID,buildingTag):
         return self.buildingCounts[buildingTag][playerID]
@@ -135,7 +144,8 @@ class GameBoard(object):
                 if curDist >playerRoads[i]:
                     playerRoads[i]=curDist
         print playerRoads
-            
+    def setRobber(self,tileID):
+        self.robberPos = tileID
                 #print road
     def recurseRoad(self,c,dist, visitedCorners, playerID):
         visitedCorners = copy.copy(visitedCorners)

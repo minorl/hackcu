@@ -2,14 +2,15 @@ from GameBoard import GameBoard
 from PlayerState import PlayerState
 
 class GameState(object):
-    def __init__(self, nplayers):
+    def __init__(self, players):
         self.board = GameBoard()
-        self.players = [PlayerState(i) for i in range(0, nplayers)]
+        self.players = [PlayerState(i) for i in range(0, players)]
         self.longestroad = None #int - PlayerId
         self.largestarmy = None #int - PlayerId
-        self.turn = 0 #int - PlayerId
-        #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard
+        self.turn = None #int - PlayerId
+        #Phases: discard, buildsettle, buildroad, moverobber, respondtrade, chooseplayer, standard, ended, turnended
         self.phase = None
+        self.phaseinfo = None
         self.lastroll = None #int - Roll value
 
     def accept(self, v):
@@ -22,11 +23,16 @@ class GameState(object):
         self.players[player].addResource(resource, amount)
     def removeResource(self, player, resource, amount):
         self.players[player].removeResource(resource, amount)
+    def countResources(self, player):
+        return self.players[player].resourceCount()
 
     def addCard(self, player, card):
         self.players[player].addCard(card)
     def removeCard(self, player, card):
         self.players[player].removeCard(card)
+
+    def getBuildings(self, dieroll):
+        return self.board.getBuildings(dieroll)
 
     def updateScore(self, player):
         c = self.board.getCount(player, 'city')
@@ -51,6 +57,7 @@ class GameState(object):
         self.players[player].remBuildings["city"] = startingCities - c
         self.players[player].remBuildings["road"] = startingRoads - r
         self.players[player].remBuildings["settlement"] = startingSettlement - s
-
-    def getRobber(self):
+    def getAdjacentPlayers(self, tile):
+        return self.board.getAdjacentPlayers(tile)
+    def getRobberTile(self):
         return self.board.getRobber()
