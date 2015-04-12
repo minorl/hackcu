@@ -36,6 +36,8 @@ var x_offset = 120;
 var total_x_offset = -100;
 var total_y_offset = 25;
 
+var texts = {};
+
 // Variable to store the action after having clicked on an action button
 // -1 => no action, 0 => build road, 1 => build settlement, 2 => build city
 var action = -1;
@@ -270,7 +272,9 @@ function drawPieces(data) {
                 offset = 200;
             }
 
-            var text = game.add.text(1000 + offset, 350 * c, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            var player_name = game.add.text(1000 + offset, 350 * c, players[player_state.id], { font: "24px Arial", fill: players[player_state.id], align: "center" });
+            console.log("@@@@@@@@@" + player_state.score);
+            var player_score = game.add.text(1000 + offset + 100, 350 * c, ": " + player_state.score, { font: "24px Arial", fill: players[player_state.id], align: "center" });
             var resources = player_state.resources;
             var brick = resources.brick;
             var sheep = resources.sheep;
